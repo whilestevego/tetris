@@ -1,4 +1,4 @@
-module Grid exposing (Grid, set, get, coordinateMap, initialize, toList)
+module Grid exposing (Grid, fromList, set, get, coordinateMap, initialize, toList)
 
 import List.Extra exposing (groupsOf)
 import Array exposing (Array)
@@ -25,6 +25,20 @@ type alias Coordinate =
 coordinateGetter : Int -> Int -> Coordinate
 coordinateGetter columns index =
     ( index // columns, index % columns )
+
+
+fromList : List (List a) -> Grid a
+fromList list =
+    let
+        columns =
+            list |> List.head |> Maybe.withDefault [] |> List.length
+    in
+        Grid
+            columns
+            (list
+                |> List.concatMap (List.take columns)
+                |> Array.fromList
+            )
 
 
 initialize : Int -> Int -> (Coordinate -> a) -> Grid a
@@ -58,8 +72,18 @@ get ( col, row ) { data, columns } =
 
 
 set : Coordinate -> a -> Grid a -> Grid a
-set ( col, row ) value { data, columns } =
-    Grid columns (Array.set (col * columns + row) value data)
+set ( col, row ) value grid =
+    let
+        { columns, data } =
+            grid
+
+        rows =
+            (Array.length data) // columns
+    in
+        if (col >= columns || row >= rows) then
+            grid
+        else
+            Grid columns (Array.set (col * columns + row) value data)
 
 
 coordinateMap : (Coordinate -> a -> b) -> Grid a -> Grid b

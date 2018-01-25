@@ -12,19 +12,25 @@ import Array
 all : Test
 all =
     describe "Grid"
-        [ test "initialize" <|
+        [ test "fromList" <|
+            \_ ->
+                Expect.equal
+                    (fromList [ [ "Bye", "Bye" ], [ "Bye", "Bye" ] ])
+                    (Grid 2 (Array.fromList [ "Bye", "Bye", "Bye", "Bye" ]))
+        , test "initialize" <|
             \_ ->
                 Expect.equal
                     (initialize 2 2 identity)
-                    (Grid
-                        2
-                        (Array.fromList [ ( 0, 0 ), ( 0, 1 ), ( 1, 0 ), ( 1, 1 ) ])
-                    )
+                    (fromList [ [ ( 0, 0 ), ( 0, 1 ) ], [ ( 1, 0 ), ( 1, 1 ) ] ])
         , test "toList" <|
             \_ ->
-                Expect.equal
-                    (toList (initialize 2 2 identity))
-                    ([ [ ( 0, 0 ), ( 0, 1 ) ], [ ( 1, 0 ), ( 1, 1 ) ] ])
+                let
+                    grid =
+                        fromList [ [ "Bye", "Bye" ], [ "Bye", "Bye" ] ]
+                in
+                    Expect.equal
+                        (toList grid)
+                        ([ [ "Bye", "Bye" ], [ "Bye", "Bye" ] ])
         , test "get within grid" <|
             \_ ->
                 Expect.equal
@@ -40,12 +46,40 @@ all =
                 Expect.equal
                     (get ( 0, 2 ) (initialize 2 2 identity))
                     Nothing
-        , test "set within grid" <|
+        , test "set first within grid" <|
             \_ ->
-                Expect.equal
-                    (set ( 0, 0 ) "Hello" (initialize 2 2 (always "Bye")))
-                    (Grid
-                        2
-                        (Array.fromList [ "Hello", "Bye", "Bye", "Bye" ])
-                    )
+                let
+                    grid =
+                        fromList [ [ "Bye", "Bye" ], [ "Bye", "Bye" ] ]
+                in
+                    Expect.equal
+                        (set ( 0, 0 ) "Hello" grid)
+                        (fromList [ [ "Hello", "Bye" ], [ "Bye", "Bye" ] ])
+        , test "set last within grid" <|
+            \_ ->
+                let
+                    grid =
+                        fromList [ [ "Bye", "Bye" ], [ "Bye", "Bye" ] ]
+                in
+                    Expect.equal
+                        (set ( 1, 1 ) "Hello" grid)
+                        (fromList [ [ "Bye", "Bye" ], [ "Bye", "Hello" ] ])
+        , test "set outside col" <|
+            \_ ->
+                let
+                    grid =
+                        fromList [ [ "Bye", "Bye" ], [ "Bye", "Bye" ] ]
+                in
+                    Expect.equal
+                        (set ( 2, 0 ) "Hello" grid)
+                        grid
+        , test "set outside row" <|
+            \_ ->
+                let
+                    grid =
+                        fromList [ [ "Bye", "Bye" ], [ "Bye", "Bye" ] ]
+                in
+                    Expect.equal
+                        (set ( 0, 2 ) "Hello" grid)
+                        grid
         ]
