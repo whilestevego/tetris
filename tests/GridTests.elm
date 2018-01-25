@@ -82,4 +82,29 @@ all =
                     Expect.equal
                         (set ( 0, 2 ) "Hello" grid)
                         grid
+        , test "coordinateMap" <|
+            \_ ->
+                let
+                    grid =
+                        fromList [ [ "Bye", "Bye" ], [ "Bye", "Bye" ] ]
+                in
+                    Expect.equal
+                        (coordinateMap
+                            (\( c, r ) v ->
+                                (toString c)
+                                    ++ (toString r)
+                                    ++ v
+                            )
+                            grid
+                        )
+                        (fromList [ [ "00Bye", "01Bye" ], [ "10Bye", "11Bye" ] ])
+        , test "map" <|
+            \_ ->
+                let
+                    grid =
+                        fromList [ [ "Bye", "Bye" ], [ "Bye", "Bye" ] ]
+                in
+                    Expect.equal
+                        (map ((++) "Hello") grid)
+                        (fromList [ [ "HelloBye", "HelloBye" ], [ "HelloBye", "HelloBye" ] ])
         ]

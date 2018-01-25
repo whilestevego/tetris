@@ -1,4 +1,14 @@
-module Grid exposing (Grid, fromList, set, get, coordinateMap, initialize, toList)
+module Grid
+    exposing
+        ( Grid
+        , coordinateMap
+        , fromList
+        , get
+        , initialize
+        , map
+        , set
+        , toList
+        )
 
 import List.Extra exposing (groupsOf)
 import Array exposing (Array)
@@ -95,3 +105,10 @@ coordinateMap f { columns, data } =
         data
             |> Array.indexedMap (\i v -> f (coords i) v)
             |> Grid columns
+
+
+map : (a -> b) -> Grid a -> Grid b
+map f { columns, data } =
+    data
+        |> Array.map f
+        |> Grid columns
