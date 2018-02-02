@@ -1,11 +1,14 @@
 module Grid
     exposing
         ( Grid
+        , Coordinate
+        , columns
         , coordinateMap
         , fromList
         , get
         , initialize
         , map
+        , rows
         , set
         , toList
         )
@@ -35,6 +38,16 @@ type alias Coordinate =
 coordinateGetter : Int -> Int -> Coordinate
 coordinateGetter columns index =
     ( index % columns, index // columns )
+
+
+columns : Grid a -> Int
+columns grid =
+    grid.columns
+
+
+rows : Grid a -> Int
+rows { columns, data } =
+    data |> Array.length |> flip (//) columns
 
 
 fromList : List (List a) -> Grid a
