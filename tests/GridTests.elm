@@ -15,13 +15,17 @@ all =
         [ test "fromList" <|
             \_ ->
                 Expect.equal
-                    (fromList [ [ "Bye", "Bye" ], [ "Bye", "Bye" ] ])
-                    (Grid 2 (Array.fromList [ "Bye", "Bye", "Bye", "Bye" ]))
+                    (fromList [ [ "Bye", "Bye", "Bye" ], [ "Bye", "Bye", "Bye" ] ])
+                    (Grid 3 (Array.fromList [ "Bye", "Bye", "Bye", "Bye", "Bye", "Bye" ]))
         , test "initialize" <|
             \_ ->
                 Expect.equal
-                    (initialize 2 2 identity)
-                    (fromList [ [ ( 0, 0 ), ( 0, 1 ) ], [ ( 1, 0 ), ( 1, 1 ) ] ])
+                    (initialize 3 2 identity)
+                    (fromList
+                        [ [ ( 0, 0 ), ( 1, 0 ), ( 2, 0 ) ]
+                        , [ ( 0, 1 ), ( 1, 1 ), ( 2, 1 ) ]
+                        ]
+                    )
         , test "toList" <|
             \_ ->
                 let
@@ -97,7 +101,7 @@ all =
                             )
                             grid
                         )
-                        (fromList [ [ "00Bye", "01Bye" ], [ "10Bye", "11Bye" ] ])
+                        (fromList [ [ "00Bye", "10Bye" ], [ "01Bye", "11Bye" ] ])
         , test "map" <|
             \_ ->
                 let

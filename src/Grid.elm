@@ -29,12 +29,12 @@ type alias Column =
 
 
 type alias Coordinate =
-    ( Row, Column )
+    ( Column, Row )
 
 
 coordinateGetter : Int -> Int -> Coordinate
 coordinateGetter columns index =
-    ( index // columns, index % columns )
+    ( index % columns, index // columns )
 
 
 fromList : List (List a) -> Grid a
