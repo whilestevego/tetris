@@ -1,6 +1,6 @@
 module Model exposing (..)
 
-import Grid exposing (Grid)
+import Game.Grid as Grid exposing (Grid)
 
 
 type alias Model =

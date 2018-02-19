@@ -1,9 +1,9 @@
 module View.Board exposing (viewBoard)
 
+import Game.Grid as Grid exposing (Grid, Coordinate)
 import Html exposing (Html)
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
-import Grid exposing (Grid, Coordinate)
 
 
 px : Int -> String
@@ -34,13 +34,18 @@ viewBoard blockSize grid =
                     |> String.join " "
                 )
             ]
-            [ g []
-                (grid
-                    |> Grid.coordinateMap (\coords _ -> viewBlock blockSize coords)
-                    |> Grid.toList
-                    |> List.concatMap (identity)
-                )
+            [ viewBlockGrid blockSize grid
             ]
+
+
+viewBlockGrid : Int -> Grid Int -> Html msg
+viewBlockGrid blockSize grid =
+    g []
+        (grid
+            |> Grid.coordinateMap (\coords _ -> viewBlock blockSize coords)
+            |> Grid.toList
+            |> List.concatMap (identity)
+        )
 
 
 viewBlock : Int -> Coordinate -> Html msg

@@ -1,4 +1,4 @@
-module Grid
+module Game.Grid
     exposing
         ( Grid
         , Coordinate
@@ -8,6 +8,7 @@ module Grid
         , get
         , initialize
         , map
+        , rotate90
         , rows
         , set
         , toList
@@ -64,6 +65,21 @@ fromList list =
             )
 
 
+rotate90 : Grid a -> Grid a
+rotate90 grid =
+    let
+        rs =
+            rows grid
+
+        cs =
+            columns grid
+    in
+        initialize
+            rs
+            cs
+            (\( col, row ) -> getUnsafe ( row, rs - 1 - col ) grid)
+
+
 initialize : Int -> Int -> (Coordinate -> a) -> Grid a
 initialize columns rows f =
     let
@@ -91,7 +107,21 @@ get ( col, row ) { data, columns } =
         if (col >= columns || row >= rows) then
             Nothing
         else
-            Array.get (col * columns + row) data
+            Array.get (col + row * columns) data
+
+
+getUnsafe : Coordinate -> Grid a -> a
+getUnsafe coords grid =
+    case get coords grid of
+        Just x ->
+            x
+
+        Nothing ->
+            Debug.crash
+                ("Coordinates "
+                    ++ toString coords
+                    ++ " of Grid are not reachable."
+                )
 
 
 set : Coordinate -> a -> Grid a -> Grid a

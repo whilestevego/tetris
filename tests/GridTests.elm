@@ -2,7 +2,7 @@ module GridTests exposing (..)
 
 import Test exposing (..)
 import Expect
-import Grid exposing (..)
+import Game.Grid as Grid exposing (..)
 import Array
 
 
@@ -15,8 +15,22 @@ all =
         [ test "fromList" <|
             \_ ->
                 Expect.equal
-                    (fromList [ [ "Bye", "Bye", "Bye" ], [ "Bye", "Bye", "Bye" ] ])
-                    (Grid 3 (Array.fromList [ "Bye", "Bye", "Bye", "Bye", "Bye", "Bye" ]))
+                    (fromList
+                        [ [ "Bye", "Bye", "Bye" ]
+                        , [ "Bye", "Bye", "Bye" ]
+                        ]
+                    )
+                    (Grid 3
+                        (Array.fromList
+                            [ "Bye"
+                            , "Bye"
+                            , "Bye"
+                            , "Bye"
+                            , "Bye"
+                            , "Bye"
+                            ]
+                        )
+                    )
         , test "initialize" <|
             \_ ->
                 Expect.equal
@@ -35,11 +49,16 @@ all =
                     Expect.equal
                         (toList grid)
                         ([ [ "Bye", "Bye" ], [ "Bye", "Bye" ] ])
-        , test "get within grid" <|
+        , test "get within square grid" <|
             \_ ->
                 Expect.equal
                     (get ( 1, 1 ) (initialize 2 2 identity))
                     (Just ( 1, 1 ))
+        , test "get within rectangular grid" <|
+            \_ ->
+                Expect.equal
+                    (get ( 0, 4 ) (initialize 3 5 identity))
+                    (Just ( 0, 4 ))
         , test "get outside col" <|
             \_ ->
                 Expect.equal
@@ -86,6 +105,56 @@ all =
                     Expect.equal
                         (set ( 0, 2 ) "Hello" grid)
                         grid
+        , test "rotate90" <|
+            \_ ->
+                let
+                    grid =
+                        fromList
+                            [ [ 1, 2, 3 ]
+                            , [ 4, 5, 6 ]
+                            ]
+                in
+                    Expect.equal
+                        (rotate90 grid)
+                        (fromList
+                            [ [ 4, 1 ]
+                            , [ 5, 2 ]
+                            , [ 6, 3 ]
+                            ]
+                        )
+        , test "rotate90 twice" <|
+            \_ ->
+                let
+                    grid =
+                        fromList
+                            [ [ 1, 2, 3 ]
+                            , [ 4, 5, 6 ]
+                            ]
+                in
+                    Expect.equal
+                        (grid |> rotate90 |> rotate90)
+                        (fromList
+                            [ [ 6, 5, 4 ]
+                            , [ 3, 2, 1 ]
+                            ]
+                        )
+        , test "rotate90 thrice" <|
+            \_ ->
+                let
+                    grid =
+                        fromList
+                            [ [ 1, 2, 3 ]
+                            , [ 4, 5, 6 ]
+                            ]
+                in
+                    Expect.equal
+                        (grid |> rotate90 |> rotate90 |> rotate90)
+                        (fromList
+                            [ [ 3, 6 ]
+                            , [ 2, 5 ]
+                            , [ 1, 4 ]
+                            ]
+                        )
         , test "coordinateMap" <|
             \_ ->
                 let
@@ -110,5 +179,9 @@ all =
                 in
                     Expect.equal
                         (map ((++) "Hello") grid)
-                        (fromList [ [ "HelloBye", "HelloBye" ], [ "HelloBye", "HelloBye" ] ])
+                        (fromList
+                            [ [ "HelloBye", "HelloBye" ]
+                            , [ "HelloBye", "HelloBye" ]
+                            ]
+                        )
         ]
