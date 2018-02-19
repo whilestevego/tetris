@@ -10,7 +10,4 @@ type alias Model =
 
 init : ( Model, Cmd msg )
 init =
-    ( { board = Grid.initialize 10 22 (always 0)
-      }
-    , Cmd.none
-    )
+    ( { board = Grid.initialize 10 22 (always 0) }, Cmd.none )
