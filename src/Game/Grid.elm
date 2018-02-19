@@ -2,14 +2,14 @@ module Game.Grid
     exposing
         ( Grid
         , Coordinate
-        , columns
+        , columnLength
         , coordinateMap
         , fromList
         , get
         , initialize
         , map
         , rotate90
-        , rows
+        , rowLength
         , set
         , toList
         )
@@ -41,13 +41,13 @@ coordinateGetter columns index =
     ( index % columns, index // columns )
 
 
-columns : Grid a -> Int
-columns grid =
+columnLength : Grid a -> Int
+columnLength grid =
     grid.columns
 
 
-rows : Grid a -> Int
-rows { columns, data } =
+rowLength : Grid a -> Int
+rowLength { columns, data } =
     data |> Array.length |> flip (//) columns
 
 
@@ -68,16 +68,16 @@ fromList list =
 rotate90 : Grid a -> Grid a
 rotate90 grid =
     let
-        rs =
-            rows grid
+        columns =
+            columnLength grid
 
-        cs =
-            columns grid
+        rows =
+            rowLength grid
     in
         initialize
-            rs
-            cs
-            (\( col, row ) -> getUnsafe ( row, rs - 1 - col ) grid)
+            rows
+            columns
+            (\( x, y ) -> getUnsafe ( y, rows - 1 - x ) grid)
 
 
 initialize : Int -> Int -> (Coordinate -> a) -> Grid a
@@ -99,15 +99,15 @@ toList { columns, data } =
 
 
 get : Coordinate -> Grid a -> Maybe a
-get ( col, row ) { data, columns } =
+get ( x, y ) { data, columns } =
     let
         rows =
             (Array.length data) // columns
     in
-        if (col >= columns || row >= rows) then
+        if (x >= columns || y >= rows) then
             Nothing
         else
-            Array.get (col + row * columns) data
+            Array.get (x + y * columns) data
 
 
 getUnsafe : Coordinate -> Grid a -> a
@@ -125,7 +125,7 @@ getUnsafe coords grid =
 
 
 set : Coordinate -> a -> Grid a -> Grid a
-set ( col, row ) value grid =
+set ( x, y ) value grid =
     let
         { columns, data } =
             grid
@@ -133,10 +133,10 @@ set ( col, row ) value grid =
         rows =
             (Array.length data) // columns
     in
-        if (col >= columns || row >= rows) then
+        if (x >= columns || y >= rows) then
             grid
         else
-            Grid columns (Array.set (col * columns + row) value data)
+            Grid columns (Array.set (x * columns + y) value data)
 
 
 coordinateMap : (Coordinate -> a -> b) -> Grid a -> Grid b

@@ -20,10 +20,10 @@ viewBoard : Int -> Grid Int -> Html msg
 viewBoard blockSize grid =
     let
         columns =
-            Grid.columns grid
+            Grid.columnLength grid
 
         rows =
-            Grid.rows grid
+            Grid.rowLength grid
     in
         svg
             [ width (u <| columns * blockSize)
