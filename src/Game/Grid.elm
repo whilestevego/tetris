@@ -8,6 +8,7 @@ module Game.Grid
         , get
         , initialize
         , map
+        , mergeAt
         , rotate90
         , rotate180
         , rotate270
@@ -130,6 +131,12 @@ toList { columns, data } =
         |> groupsOf columns
 
 
+toFlatList : Grid a -> List a
+toFlatList { columns, data } =
+    data
+        |> Array.toList
+
+
 get : Coordinate -> Grid a -> Maybe a
 get ( x, y ) { data, columns } =
     let
@@ -168,7 +175,7 @@ set ( x, y ) value grid =
         if (x >= columns || y >= rows) then
             grid
         else
-            Grid columns (Array.set (x * columns + y) value data)
+            Grid columns (Array.set (x + y * columns) value data)
 
 
 coordinateMap : (Coordinate -> a -> b) -> Grid a -> Grid b
@@ -187,3 +194,15 @@ map f { columns, data } =
     data
         |> Array.map f
         |> Grid columns
+
+
+mergeAt : Grid a -> Coordinate -> Grid a -> Grid a
+mergeAt gridA ( baseX, baseY ) gridB =
+    gridA
+        |> coordinateMap (\coords value -> ( coords, value ))
+        |> toFlatList
+        |> List.foldl
+            (\( ( x, y ), value ) grid ->
+                set ( baseX + x, baseY + y ) value grid
+            )
+            gridB

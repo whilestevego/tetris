@@ -9,7 +9,93 @@ import Array
 all : Test
 all =
     describe "Grid"
-        [ test "fromList" <|
+        [ describe "mergeAt"
+            [ test "( 0, 0 ) in bounds" <|
+                \_ ->
+                    let
+                        guest =
+                            fromList
+                                [ [ 1, 2 ]
+                                , [ 3, 4 ]
+                                ]
+
+                        host =
+                            fromList
+                                [ [ 0, 0, 0, 0 ]
+                                , [ 0, 0, 0, 0 ]
+                                , [ 0, 0, 0, 0 ]
+                                , [ 0, 0, 0, 0 ]
+                                , [ 0, 0, 0, 0 ]
+                                ]
+                    in
+                        Expect.equal
+                            (fromList
+                                [ [ 1, 2, 0, 0 ]
+                                , [ 3, 4, 0, 0 ]
+                                , [ 0, 0, 0, 0 ]
+                                , [ 0, 0, 0, 0 ]
+                                , [ 0, 0, 0, 0 ]
+                                ]
+                            )
+                            (mergeAt guest ( 0, 0 ) host)
+            , test "( 2, 3 ) in bounds" <|
+                \_ ->
+                    let
+                        guest =
+                            fromList
+                                [ [ 1, 2 ]
+                                , [ 3, 4 ]
+                                ]
+
+                        host =
+                            fromList
+                                [ [ 0, 0, 0, 0 ]
+                                , [ 0, 0, 0, 0 ]
+                                , [ 0, 0, 0, 0 ]
+                                , [ 0, 0, 0, 0 ]
+                                , [ 0, 0, 0, 0 ]
+                                ]
+                    in
+                        Expect.equal
+                            (fromList
+                                [ [ 0, 0, 0, 0 ]
+                                , [ 0, 0, 0, 0 ]
+                                , [ 0, 0, 0, 0 ]
+                                , [ 0, 0, 1, 2 ]
+                                , [ 0, 0, 3, 4 ]
+                                ]
+                            )
+                            (mergeAt guest ( 2, 3 ) host)
+            , test "( 3, 1 ) at bounds" <|
+                \_ ->
+                    let
+                        guest =
+                            fromList
+                                [ [ 1, 2 ]
+                                , [ 3, 4 ]
+                                ]
+
+                        host =
+                            fromList
+                                [ [ 0, 0, 0, 0 ]
+                                , [ 0, 0, 0, 0 ]
+                                , [ 0, 0, 0, 0 ]
+                                , [ 0, 0, 0, 0 ]
+                                , [ 0, 0, 0, 0 ]
+                                ]
+                    in
+                        Expect.equal
+                            (fromList
+                                [ [ 0, 0, 0, 0 ]
+                                , [ 0, 0, 0, 1 ]
+                                , [ 0, 0, 0, 3 ]
+                                , [ 0, 0, 0, 0 ]
+                                , [ 0, 0, 0, 0 ]
+                                ]
+                            )
+                            (mergeAt guest ( 3, 1 ) host)
+            ]
+        , test "fromList" <|
             \_ ->
                 Expect.equal
                     (fromList
@@ -66,42 +152,62 @@ all =
                 Expect.equal
                     (get ( 0, 2 ) (initialize 2 2 identity))
                     Nothing
-        , test "set first within grid" <|
-            \_ ->
-                let
-                    grid =
-                        fromList [ [ "Bye", "Bye" ], [ "Bye", "Bye" ] ]
-                in
-                    Expect.equal
-                        (set ( 0, 0 ) "Hello" grid)
-                        (fromList [ [ "Hello", "Bye" ], [ "Bye", "Bye" ] ])
-        , test "set last within grid" <|
-            \_ ->
-                let
-                    grid =
-                        fromList [ [ "Bye", "Bye" ], [ "Bye", "Bye" ] ]
-                in
-                    Expect.equal
-                        (set ( 1, 1 ) "Hello" grid)
-                        (fromList [ [ "Bye", "Bye" ], [ "Bye", "Hello" ] ])
-        , test "set outside col" <|
-            \_ ->
-                let
-                    grid =
-                        fromList [ [ "Bye", "Bye" ], [ "Bye", "Bye" ] ]
-                in
-                    Expect.equal
-                        (set ( 2, 0 ) "Hello" grid)
-                        grid
-        , test "set outside row" <|
-            \_ ->
-                let
-                    grid =
-                        fromList [ [ "Bye", "Bye" ], [ "Bye", "Bye" ] ]
-                in
-                    Expect.equal
-                        (set ( 0, 2 ) "Hello" grid)
-                        grid
+        , describe "set"
+            [ test "first within grid" <|
+                \_ ->
+                    let
+                        grid =
+                            fromList [ [ "Bye", "Bye" ], [ "Bye", "Bye" ] ]
+                    in
+                        Expect.equal
+                            (set ( 0, 0 ) "Hello" grid)
+                            (fromList [ [ "Hello", "Bye" ], [ "Bye", "Bye" ] ])
+            , test "second within grid" <|
+                \_ ->
+                    let
+                        grid =
+                            fromList [ [ "Bye", "Bye" ], [ "Bye", "Bye" ] ]
+                    in
+                        Expect.equal
+                            (set ( 1, 0 ) "Hello" grid)
+                            (fromList [ [ "Bye", "Hello" ], [ "Bye", "Bye" ] ])
+            , test "third within grid" <|
+                \_ ->
+                    let
+                        grid =
+                            fromList [ [ "Bye", "Bye" ], [ "Bye", "Bye" ] ]
+                    in
+                        Expect.equal
+                            (set ( 0, 1 ) "Hello" grid)
+                            (fromList [ [ "Bye", "Bye" ], [ "Hello", "Bye" ] ])
+            , test "last within grid" <|
+                \_ ->
+                    let
+                        grid =
+                            fromList [ [ "Bye", "Bye" ], [ "Bye", "Bye" ] ]
+                    in
+                        Expect.equal
+                            (set ( 1, 1 ) "Hello" grid)
+                            (fromList [ [ "Bye", "Bye" ], [ "Bye", "Hello" ] ])
+            , test "outside col" <|
+                \_ ->
+                    let
+                        grid =
+                            fromList [ [ "Bye", "Bye" ], [ "Bye", "Bye" ] ]
+                    in
+                        Expect.equal
+                            (set ( 2, 0 ) "Hello" grid)
+                            grid
+            , test "outside row" <|
+                \_ ->
+                    let
+                        grid =
+                            fromList [ [ "Bye", "Bye" ], [ "Bye", "Bye" ] ]
+                    in
+                        Expect.equal
+                            (set ( 0, 2 ) "Hello" grid)
+                            grid
+            ]
         , test "rotate90" <|
             \_ ->
                 let
