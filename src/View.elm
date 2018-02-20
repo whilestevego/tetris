@@ -19,5 +19,5 @@ view model =
                 ]
     in
         div [ css ]
-            [ viewBoard 30 model.board
+            [ viewBoard model.board
             ]

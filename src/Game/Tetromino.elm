@@ -3,7 +3,7 @@ module Game.Tetromino exposing (..)
 import Game.Grid as Grid exposing (Grid)
 
 
-type TetrominoBlock
+type Block
     = I
     | O
     | T
@@ -14,7 +14,7 @@ type TetrominoBlock
 
 
 type alias Tetromino =
-    Grid (Maybe TetrominoBlock)
+    Grid (Maybe Block)
 
 
 tetrominoI : Tetromino
