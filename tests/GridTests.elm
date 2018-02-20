@@ -155,6 +155,53 @@ all =
                             , [ 1, 4 ]
                             ]
                         )
+        , test "rotate180" <|
+            \_ ->
+                let
+                    grid =
+                        fromList
+                            [ [ 1, 2, 3 ]
+                            , [ 4, 5, 6 ]
+                            , [ 7, 8, 9 ]
+                            ]
+                in
+                    Expect.equal
+                        (grid |> rotate180)
+                        (fromList
+                            [ [ 9, 8, 7 ]
+                            , [ 6, 5, 4 ]
+                            , [ 3, 2, 1 ]
+                            ]
+                        )
+        , test "rotate270" <|
+            \_ ->
+                let
+                    grid =
+                        fromList
+                            [ [ 1, 2, 3 ]
+                            , [ 4, 5, 6 ]
+                            ]
+                in
+                    Expect.equal
+                        (grid |> rotate270)
+                        (fromList
+                            [ [ 3, 6 ]
+                            , [ 2, 5 ]
+                            , [ 1, 4 ]
+                            ]
+                        )
+        , test "rotate270 == rotate90 * 3" <|
+            \_ ->
+                let
+                    grid =
+                        fromList
+                            [ [ 1, 2, 3 ]
+                            , [ 4, 5, 6 ]
+                            ]
+                in
+                    Expect.equal
+                        (grid |> rotate270)
+                        (grid |> rotate90 |> rotate90 |> rotate90)
         , test "coordinateMap" <|
             \_ ->
                 let

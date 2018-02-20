@@ -9,6 +9,8 @@ module Game.Grid
         , initialize
         , map
         , rotate90
+        , rotate180
+        , rotate270
         , rowLength
         , set
         , toList
@@ -78,6 +80,36 @@ rotate90 grid =
             rows
             columns
             (\( x, y ) -> getUnsafe ( y, rows - 1 - x ) grid)
+
+
+rotate180 : Grid a -> Grid a
+rotate180 grid =
+    let
+        columns =
+            columnLength grid
+
+        rows =
+            rowLength grid
+    in
+        initialize
+            columns
+            rows
+            (\( x, y ) -> getUnsafe ( columns - 1 - x, rows - 1 - y ) grid)
+
+
+rotate270 : Grid a -> Grid a
+rotate270 grid =
+    let
+        columns =
+            columnLength grid
+
+        rows =
+            rowLength grid
+    in
+        initialize
+            rows
+            columns
+            (\( x, y ) -> getUnsafe ( columns - 1 - y, x ) grid)
 
 
 initialize : Int -> Int -> (Coordinate -> a) -> Grid a
