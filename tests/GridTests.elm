@@ -94,6 +94,34 @@ all =
                                 ]
                             )
                             (mergeAt guest ( 3, 1 ) host)
+            , test "( -1, -1 ) outside bounds" <|
+                \_ ->
+                    let
+                        guest =
+                            fromList
+                                [ [ 1, 2 ]
+                                , [ 3, 4 ]
+                                ]
+
+                        host =
+                            fromList
+                                [ [ 0, 0, 0, 0 ]
+                                , [ 0, 0, 0, 0 ]
+                                , [ 0, 0, 0, 0 ]
+                                , [ 0, 0, 0, 0 ]
+                                , [ 0, 0, 0, 0 ]
+                                ]
+                    in
+                        Expect.equal
+                            (fromList
+                                [ [ 4, 0, 0, 0 ]
+                                , [ 0, 0, 0, 0 ]
+                                , [ 0, 0, 0, 0 ]
+                                , [ 0, 0, 0, 0 ]
+                                , [ 0, 0, 0, 0 ]
+                                ]
+                            )
+                            (mergeAt guest ( -1, -1 ) host)
             ]
         , test "fromList" <|
             \_ ->
