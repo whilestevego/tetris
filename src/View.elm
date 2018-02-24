@@ -3,7 +3,7 @@ module View exposing (view)
 import Html exposing (Html, div)
 import Html.Attributes exposing (class, style)
 import Model exposing (Model)
-import View.Board exposing (viewBoard)
+import View.Game exposing (viewGame)
 
 
 view : Model -> Html msg
@@ -19,5 +19,5 @@ view model =
                 ]
     in
         div [ css ]
-            [ viewBoard model.board
+            [ viewGame model
             ]
