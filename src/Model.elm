@@ -4,6 +4,10 @@ import Game.Grid as Grid exposing (Grid, Coordinate)
 import Game.Tetromino as Tetromino exposing (..)
 
 
+type Msg
+    = AnimationDiffs Float
+
+
 type alias Model =
     { activeTetromino : Maybe Tetromino
     , board : Grid (Maybe Block)
