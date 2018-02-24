@@ -4,6 +4,8 @@ module Game.Grid
         , Coordinate
         , columnLength
         , coordinateMap
+        , findCoordinate
+        , findCoordinateReverse
         , fromList
         , get
         , initialize
@@ -20,6 +22,25 @@ module Game.Grid
 
 import List.Extra exposing (groupsOf)
 import Array exposing (Array)
+
+
+-- TODO: Move to an Array module
+
+
+findIndex : (a -> Bool) -> Array a -> Maybe Int
+findIndex pred arr =
+    arr
+        |> Array.toList
+        |> List.Extra.findIndex pred
+
+
+findIndexReverse : (a -> Bool) -> Array a -> Maybe Int
+findIndexReverse pred arr =
+    arr
+        |> Array.toList
+        |> List.reverse
+        |> List.Extra.findIndex pred
+        |> Maybe.map (\x -> Array.length arr - 1 - x)
 
 
 type alias Grid a =
@@ -60,13 +81,13 @@ fromList list =
     let
         columns =
             list |> List.head |> Maybe.withDefault [] |> List.length
-    in
-        Grid
-            columns
-            (list
+
+        data =
+            list
                 |> List.concatMap (List.take columns)
                 |> Array.fromList
-            )
+    in
+        Grid columns data
 
 
 rotate90 : Grid a -> Grid a
@@ -136,6 +157,30 @@ toFlatList : Grid a -> List a
 toFlatList { columns, data } =
     data
         |> Array.toList
+
+
+findCoordinate : (a -> Bool) -> Grid a -> Maybe Coordinate
+findCoordinate pred { columns, data } =
+    data
+        |> findIndex pred
+        |> Maybe.map (coordinateGetter columns)
+
+
+findCoordinateReverse : (a -> Bool) -> Grid a -> Maybe Coordinate
+findCoordinateReverse pred { columns, data } =
+    data
+        |> findIndexReverse pred
+        |> Maybe.map (coordinateGetter columns)
+
+
+has : Coordinate -> Grid (Maybe a) -> Bool
+has coord grid =
+    case get coord grid of
+        Just _ ->
+            True
+
+        Nothing ->
+            False
 
 
 get : Coordinate -> Grid a -> Maybe a
