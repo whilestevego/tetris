@@ -34,12 +34,29 @@ updateTime dt model =
             }
 
 
+(>=>) : Maybe a -> (a -> b) -> Maybe b
+(>=>) =
+    flip Maybe.map
+infixr 9 >=>
+
+
 gameTick : Model -> Model
 gameTick model =
     let
         { tick, activeTetromino, board } =
             model
+
+        newActiveTetromino =
+            case activeTetromino of
+                Just tetro ->
+                    if (Tuple.second tetro.position) > 21 then
+                        activeTetromino >=> Tetromino.setPos ( 0, -1 )
+                    else
+                        activeTetromino >=> Tetromino.moveDown
+
+                Nothing ->
+                    activeTetromino
     in
         { model
-            | activeTetromino = Maybe.map Tetromino.moveDown activeTetromino
+            | activeTetromino = newActiveTetromino
         }
