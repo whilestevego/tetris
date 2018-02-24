@@ -1,7 +1,7 @@
 module View.Board exposing (viewBoard)
 
 import Game.Grid as Grid exposing (Grid, Coordinate)
-import Game.Tetromino exposing (..)
+import Game.Tetromino as Tetromino exposing (..)
 import Html exposing (Html)
 import Svg exposing (..)
 import Svg.Attributes exposing (..)
@@ -44,44 +44,21 @@ viewBoard grid =
             ]
 
 
-viewBlockGrid : Grid (Maybe Block) -> Html msg
+viewBlockGrid : Grid (Maybe Block) -> Svg msg
 viewBlockGrid grid =
     g []
         (grid
             |> Grid.coordinateMap viewBlock
-            |> Grid.toList
-            |> List.concatMap (identity)
+            |> Grid.toFlatList
+            |> List.filterMap (Maybe.map identity)
         )
 
 
-viewBlock : Coordinate -> Maybe Block -> Html msg
+viewBlock : Coordinate -> Maybe Block -> Maybe (Svg msg)
 viewBlock coords block =
-    case block of
-        Just x ->
-            case x of
-                I ->
-                    viewBaseBlock [ fill "#E91E63" ] coords
-
-                O ->
-                    viewBaseBlock [ fill "#673AB7" ] coords
-
-                T ->
-                    viewBaseBlock [ fill "#2196F3" ] coords
-
-                J ->
-                    viewBaseBlock [ fill "#00BCD4" ] coords
-
-                L ->
-                    viewBaseBlock [ fill "#4CAF50" ] coords
-
-                S ->
-                    viewBaseBlock [ fill "#CDDC39" ] coords
-
-                Z ->
-                    viewBaseBlock [ fill "#FFC107" ] coords
-
-        Nothing ->
-            viewBaseBlock [ fill "#F5F5F5" ] coords
+    block
+        |> Maybe.map
+            (\x -> viewBaseBlock [ fill (Tetromino.color x) ] coords)
 
 
 viewBaseBlock : List (Attribute msg) -> Coordinate -> Html msg
