@@ -9,11 +9,12 @@ module Game.Grid
         , initialize
         , map
         , mergeAt
-        , rotate90
         , rotate180
         , rotate270
+        , rotate90
         , rowLength
         , set
+        , toFlatList
         , toList
         )
 
