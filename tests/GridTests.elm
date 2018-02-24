@@ -160,26 +160,28 @@ all =
                     Expect.equal
                         (toList grid)
                         ([ [ "Bye", "Bye" ], [ "Bye", "Bye" ] ])
-        , test "get within square grid" <|
-            \_ ->
-                Expect.equal
-                    (get ( 1, 1 ) (initialize 2 2 identity))
-                    (Just ( 1, 1 ))
-        , test "get within rectangular grid" <|
-            \_ ->
-                Expect.equal
-                    (get ( 0, 4 ) (initialize 3 5 identity))
-                    (Just ( 0, 4 ))
-        , test "get outside col" <|
-            \_ ->
-                Expect.equal
-                    (get ( 2, 0 ) (initialize 2 2 identity))
-                    Nothing
-        , test "get outside row" <|
-            \_ ->
-                Expect.equal
-                    (get ( 0, 2 ) (initialize 2 2 identity))
-                    Nothing
+        , describe "get"
+            [ test "within square grid" <|
+                \_ ->
+                    Expect.equal
+                        (get ( 1, 1 ) (initialize 2 2 identity))
+                        (Just ( 1, 1 ))
+            , test "within rectangular grid" <|
+                \_ ->
+                    Expect.equal
+                        (get ( 0, 4 ) (initialize 3 5 identity))
+                        (Just ( 0, 4 ))
+            , test "outside col" <|
+                \_ ->
+                    Expect.equal
+                        (get ( 2, 0 ) (initialize 2 2 identity))
+                        Nothing
+            , test "outside row" <|
+                \_ ->
+                    Expect.equal
+                        (get ( 0, 2 ) (initialize 2 2 identity))
+                        Nothing
+            ]
         , describe "set"
             [ test "first within grid" <|
                 \_ ->
