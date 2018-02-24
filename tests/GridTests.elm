@@ -160,6 +160,46 @@ all =
                     Expect.equal
                         (toList grid)
                         ([ [ "Bye", "Bye" ], [ "Bye", "Bye" ] ])
+        , describe "findCoordinate"
+            [ test "with something to find" <|
+                \_ ->
+                    let
+                        grid =
+                            fromList [ [ "Bye", "Yo" ], [ "Yo", "Bye" ] ]
+                    in
+                        Expect.equal
+                            (findCoordinate ((==) "Yo") grid)
+                            (Just ( 1, 0 ))
+            , test "with nothing to find" <|
+                \_ ->
+                    let
+                        grid =
+                            fromList [ [ "Bye", "Bye" ], [ "Yo", "Bye" ] ]
+                    in
+                        Expect.equal
+                            (findCoordinate ((==) "Hallo") grid)
+                            Nothing
+            ]
+        , describe "findIndexReverse"
+            [ test "with something to find" <|
+                \_ ->
+                    let
+                        grid =
+                            fromList [ [ "Bye", "Yo" ], [ "Yo", "Bye" ] ]
+                    in
+                        Expect.equal
+                            (findCoordinateReverse ((==) "Yo") grid)
+                            (Just ( 0, 1 ))
+            , test "with nothing to find" <|
+                \_ ->
+                    let
+                        grid =
+                            fromList [ [ "Bye", "Bye" ], [ "Yo", "Bye" ] ]
+                    in
+                        Expect.equal
+                            (findCoordinate ((==) "Hallo") grid)
+                            Nothing
+            ]
         , describe "get"
             [ test "within square grid" <|
                 \_ ->
