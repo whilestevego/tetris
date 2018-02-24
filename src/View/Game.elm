@@ -3,7 +3,6 @@ module View.Game exposing (viewGame)
 import Game.Grid as Grid exposing (Grid, Coordinate)
 import Game.Tetromino as Tetromino exposing (..)
 import Html exposing (Html)
-import Html.Attributes exposing (style)
 import Model exposing (Model)
 import Svg exposing (Svg, Attribute, rect, g, svg)
 import Svg.Attributes

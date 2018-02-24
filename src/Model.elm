@@ -5,8 +5,10 @@ import Game.Tetromino as Tetromino exposing (..)
 
 
 type alias Model =
-    { board : Grid (Maybe Block)
-    , activeTetromino : Maybe Tetromino
+    { activeTetromino : Maybe Tetromino
+    , board : Grid (Maybe Block)
+    , dt : Float
+    , tick : Int
     }
 
 
@@ -17,8 +19,10 @@ initialBoard =
 
 init : ( Model, Cmd msg )
 init =
-    ( { board = initialBoard
-      , activeTetromino = Just (Tetromino.create I ( 0, 0 ))
+    ( { activeTetromino = Just (Tetromino.create I ( 0, -1 ))
+      , board = initialBoard
+      , dt = 0
+      , tick = 0
       }
     , Cmd.none
     )

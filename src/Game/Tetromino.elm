@@ -77,6 +77,18 @@ generateBlocks blockType =
                 ]
 
 
+moveDown : Tetromino -> Tetromino
+moveDown tetromino =
+    let
+        { position } =
+            tetromino
+
+        ( pX, pY ) =
+            position
+    in
+        { tetromino | position = ( pX, pY + 1 ) }
+
+
 color : Block -> String
 color blockType =
     case blockType of
