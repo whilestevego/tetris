@@ -89,6 +89,21 @@ moveDown tetromino =
         { tetromino | position = ( pX, pY + 1 ) }
 
 
+setPos : Coordinate -> Tetromino -> Tetromino
+setPos pos tetromino =
+    { tetromino | position = pos }
+
+
+getX : Tetromino -> Int
+getX tetromino =
+    Tuple.first tetromino.position
+
+
+getY : Tetromino -> Int
+getY tetromino =
+    Tuple.second tetromino.position
+
+
 color : Block -> String
 color blockType =
     case blockType of
