@@ -375,6 +375,36 @@ all =
                     Expect.equal
                         (grid |> rotate270)
                         (grid |> rotate90 |> rotate90 |> rotate90)
+        , describe "coordinateFoldl"
+            [ test "ignoring coordinates" <|
+                \_ ->
+                    let
+                        grid =
+                            fromList
+                                [ [ 1, 2 ]
+                                , [ 3, 4 ]
+                                ]
+                    in
+                        Expect.equal
+                            10
+                            (coordinateFoldl (\_ v a -> v + a) 0 grid)
+            , test "only coordinates" <|
+                \_ ->
+                    let
+                        grid =
+                            fromList
+                                [ [ 1, 2 ]
+                                , [ 3, 4 ]
+                                ]
+                    in
+                        Expect.equal
+                            "11011000"
+                            (coordinateFoldl
+                                (\( x, y ) _ a -> toString x ++ toString y ++ a)
+                                ""
+                                grid
+                            )
+            ]
         , test "coordinateMap" <|
             \_ ->
                 let

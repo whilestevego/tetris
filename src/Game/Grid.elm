@@ -3,6 +3,7 @@ module Game.Grid
         ( Grid
         , Coordinate
         , columnLength
+        , coordinateFoldl
         , coordinateMap
         , findCoordinate
         , findCoordinateReverse
@@ -61,8 +62,8 @@ type alias Coordinate =
     ( Column, Row )
 
 
-coordinateGetter : Int -> Int -> Coordinate
-coordinateGetter columns index =
+coordinatesFromCols : Int -> Int -> Coordinate
+coordinatesFromCols columns index =
     ( index % columns, index // columns )
 
 
@@ -139,7 +140,7 @@ initialize : Int -> Int -> (Coordinate -> a) -> Grid a
 initialize columns rows f =
     let
         coords =
-            coordinateGetter columns
+            coordinatesFromCols columns
     in
         Grid
             columns
@@ -163,14 +164,14 @@ findCoordinate : (a -> Bool) -> Grid a -> Maybe Coordinate
 findCoordinate pred { columns, data } =
     data
         |> findIndex pred
-        |> Maybe.map (coordinateGetter columns)
+        |> Maybe.map (coordinatesFromCols columns)
 
 
 findCoordinateReverse : (a -> Bool) -> Grid a -> Maybe Coordinate
 findCoordinateReverse pred { columns, data } =
     data
         |> findIndexReverse pred
-        |> Maybe.map (coordinateGetter columns)
+        |> Maybe.map (coordinatesFromCols columns)
 
 
 has : Coordinate -> Grid (Maybe a) -> Bool
@@ -224,15 +225,29 @@ set ( x, y ) value grid =
             Grid columns (Array.set (x + y * columns) value data)
 
 
-coordinateMap : (Coordinate -> a -> b) -> Grid a -> Grid b
-coordinateMap f { columns, data } =
+coordinateFoldl : (Coordinate -> a -> b -> b) -> b -> Grid a -> b
+coordinateFoldl fn init grid =
     let
-        coords =
-            coordinateGetter columns
+        { columns, data } =
+            grid
     in
         data
-            |> Array.indexedMap (\i v -> f (coords i) v)
-            |> Grid columns
+            |> Array.toIndexedList
+            |> List.foldl
+                (\( index, value ) acc ->
+                    fn
+                        (coordinatesFromCols columns index)
+                        value
+                        acc
+                )
+                init
+
+
+coordinateMap : (Coordinate -> a -> b) -> Grid a -> Grid b
+coordinateMap f { columns, data } =
+    data
+        |> Array.indexedMap (\i v -> f (coordinatesFromCols columns i) v)
+        |> Grid columns
 
 
 map : (a -> b) -> Grid a -> Grid b
