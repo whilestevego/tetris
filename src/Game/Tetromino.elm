@@ -1,4 +1,15 @@
-module Game.Tetromino exposing (..)
+module Game.Tetromino
+    exposing
+        ( Tetromino
+        , Block(..)
+        , create
+        , rotateRight
+        , setPos
+        , moveDown
+        , getX
+        , getY
+        , color
+        )
 
 import Game.Grid as Grid exposing (Grid, Coordinate)
 
@@ -16,12 +27,20 @@ type Block
 type alias Tetromino =
     { blocks : Grid (Maybe Block)
     , position : Coordinate
+    , bounds : ( Coordinate, Coordinate )
     }
 
 
 create : Block -> Coordinate -> Tetromino
 create blockType pos =
-    Tetromino (generateBlocks blockType) pos
+    let
+        blocks =
+            (generateBlocks blockType)
+
+        bounds =
+            (calculateBounds blocks)
+    in
+        Tetromino blocks pos bounds
 
 
 generateBlocks : Block -> Grid (Maybe Block)
@@ -77,21 +96,109 @@ generateBlocks blockType =
                 ]
 
 
-moveDown : Tetromino -> Tetromino
-moveDown tetromino =
-    let
-        { position } =
-            tetromino
+firstBlockPos : Grid (Maybe Block) -> Coordinate
+firstBlockPos blocks =
+    case Grid.findCoordinate ((/=) Nothing) blocks of
+        Just pos ->
+            pos
 
+        Nothing ->
+            Debug.crash "Could not find block in Tetromino data"
+
+
+lastBlockPos : Grid (Maybe Block) -> Coordinate
+lastBlockPos blocks =
+    case Grid.findCoordinateReverse ((/=) Nothing) blocks of
+        Just pos ->
+            pos
+
+        Nothing ->
+            Debug.crash "Could not find block in Tetromino data"
+
+
+calculateBounds : Grid (Maybe Block) -> ( Coordinate, Coordinate )
+calculateBounds blocks =
+    let
+        maybeBounds =
+            blocks
+                |> Grid.coordinateFoldl
+                    (\( x, y ) block bounds ->
+                        case block of
+                            Just _ ->
+                                case bounds of
+                                    Nothing ->
+                                        Just ( ( x, y ), ( x, y ) )
+
+                                    Just bounds ->
+                                        let
+                                            ( ( uLX, uLY ), ( lRX, lRY ) ) =
+                                                bounds
+                                        in
+                                            Just
+                                                ( ( min x uLX, min y uLY )
+                                                , ( max x lRX, max y lRY )
+                                                )
+
+                            Nothing ->
+                                bounds
+                    )
+                    Nothing
+    in
+        case maybeBounds of
+            Just bounds ->
+                bounds
+
+            Nothing ->
+                Debug.crash "Could not find any block within grid"
+
+
+
+-- BOUNDS OPS --
+
+
+getBounds : Tetromino -> ( Coordinate, Coordinate )
+getBounds { position, bounds } =
+    let
         ( pX, pY ) =
             position
+
+        ( ( uLX, uLY ), ( lRX, lRY ) ) =
+            bounds
     in
-        { tetromino | position = ( pX, pY + 1 ) }
+        ( ( pX + uLX, pY + uLY ), ( pX + lRX, pY + lRY ) )
+
+
+rotateRight : Tetromino -> Tetromino
+rotateRight tetromino =
+    let
+        blocks =
+            Grid.rotate90 tetromino.blocks
+
+        bounds =
+            calculateBounds blocks
+    in
+        { tetromino
+            | blocks = blocks
+            , bounds = bounds
+        }
+
+
+
+-- POSITION OPS --
 
 
 setPos : Coordinate -> Tetromino -> Tetromino
 setPos pos tetromino =
     { tetromino | position = pos }
+
+
+moveDown : Tetromino -> Tetromino
+moveDown tetromino =
+    let
+        ( pX, pY ) =
+            tetromino.position
+    in
+        setPos ( pX, pY + 1 ) tetromino
 
 
 getX : Tetromino -> Int
@@ -102,6 +209,10 @@ getX tetromino =
 getY : Tetromino -> Int
 getY tetromino =
     Tuple.second tetromino.position
+
+
+
+-- MISC --
 
 
 color : Block -> String
