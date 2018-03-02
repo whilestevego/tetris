@@ -6,6 +6,7 @@ import Game.Tetromino as Tetromino exposing (..)
 
 type Msg
     = AnimationDiffs Float
+    | GetRandom Int
 
 
 type alias Model =
@@ -13,6 +14,7 @@ type alias Model =
     , board : Grid (Maybe Block)
     , dt : Float
     , tick : Int
+    , randomNum : Int
     }
 
 
@@ -23,10 +25,11 @@ initialBoard =
 
 init : ( Model, Cmd msg )
 init =
-    ( { activeTetromino = Just (Tetromino.create I ( 0, -1 ))
+    ( { activeTetromino = Nothing
       , board = initialBoard
       , dt = 0
       , tick = 0
+      , randomNum = 0
       }
     , Cmd.none
     )

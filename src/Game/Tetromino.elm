@@ -14,6 +14,7 @@ module Game.Tetromino
         , getBottomBound
         , getLeftBound
         , toPositionList
+        , typeFromInt
         , color
         )
 
@@ -266,6 +267,31 @@ toPositionList tetromino =
 
 
 -- MISC --
+
+
+typeFromInt : Int -> Block
+typeFromInt x =
+    case x of
+        1 ->
+            O
+
+        2 ->
+            T
+
+        3 ->
+            J
+
+        4 ->
+            L
+
+        5 ->
+            S
+
+        6 ->
+            Z
+
+        _ ->
+            I
 
 
 color : Block -> String

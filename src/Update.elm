@@ -4,6 +4,7 @@ import Game.Tetromino as T exposing (Tetromino, Block(..))
 import Model exposing (..)
 import Time exposing (Time)
 import Game.Grid as Grid exposing (Grid)
+import Random
 
 
 -- Todo: Move to module --
@@ -19,17 +20,26 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         AnimationDiffs dt ->
-            ( updateTime dt model, Cmd.none )
+            updateTime dt model
+
+        GetRandom num ->
+            ( { model | randomNum = num }, Cmd.none )
 
 
-updateTime : Float -> Model -> Model
+updateTime : Float -> Model -> ( Model, Cmd Msg )
 updateTime dt model =
     let
         nextDt =
             model.dt + dt
 
         nextTick =
-            nextDt |> Time.inSeconds |> ((*) 2) |> truncate
+            nextDt |> Time.inSeconds |> ((*) 3) |> truncate
+
+        nextModel =
+            { model
+                | dt = nextDt
+                , tick = nextTick
+            }
 
         mapper =
             if (nextTick > model.tick) then
@@ -37,11 +47,12 @@ updateTime dt model =
             else
                 identity
     in
-        mapper
-            { model
-                | dt = nextDt
-                , tick = nextTick
-            }
+        if (nextTick > model.tick) then
+            ( gameTick nextModel
+            , Random.generate GetRandom (Random.int 1 7)
+            )
+        else
+            ( nextModel, Cmd.none )
 
 
 gameTick : Model -> Model
@@ -56,7 +67,9 @@ spawnTetromino model =
     case model.activeTetromino of
         Nothing ->
             { model
-                | activeTetromino = Just (T.create L ( 4, -1 ))
+                | activeTetromino =
+                    Just
+                        (T.create (T.typeFromInt model.randomNum) ( 4, -1 ))
             }
 
         Just _ ->
