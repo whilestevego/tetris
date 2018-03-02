@@ -7,6 +7,7 @@ module Game.Tetromino
         , rotateRight
         , setPos
         , moveDown
+        , mergeWith
         , getX
         , getY
         , getTopBound
@@ -263,6 +264,21 @@ toPositionList tetromino =
         )
         []
         tetromino
+
+
+mergeWith : Grid (Maybe Block) -> Tetromino -> Grid (Maybe Block)
+mergeWith board tetro =
+    tetro
+        |> coordinateFoldl
+            (\pos mBlock acc ->
+                case mBlock of
+                    Just block ->
+                        Grid.set pos (Just block) acc
+
+                    Nothing ->
+                        acc
+            )
+            board
 
 
 

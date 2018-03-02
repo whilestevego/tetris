@@ -90,7 +90,7 @@ applyGravity model =
                 if detectCollision (tetro |> T.moveDown) board then
                     { model
                         | activeTetromino = Nothing
-                        , board = Grid.mergeAt tetro.blocks tetro.position board
+                        , board = tetro |> T.mergeWith board
                     }
                 else
                     { model
