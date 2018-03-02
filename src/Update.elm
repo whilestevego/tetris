@@ -3,7 +3,7 @@ module Update exposing (..)
 import Game.Tetromino as T exposing (Tetromino, Block(..))
 import Model exposing (..)
 import Time exposing (Time)
-import Game.Grid as Grid
+import Game.Grid as Grid exposing (Grid)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -54,7 +54,7 @@ gameTick model =
                 }
 
             Just tetro ->
-                if (tetro |> T.getBottomBound) == 21 then
+                if detectCollision (tetro |> T.moveDown) board then
                     { model
                         | activeTetromino = Nothing
                         , board = Grid.mergeAt tetro.blocks tetro.position board
@@ -65,6 +65,8 @@ gameTick model =
                     }
 
 
-
--- detectCollision : Tetromino -> Grid -> Bool
--- detectCollision tetro board =
+detectCollision : Tetromino -> Grid (Maybe Block) -> Bool
+detectCollision tetro board =
+    tetro
+        |> T.toPositionList
+        |> List.any (\pos -> board |> Grid.isNothing pos |> not)

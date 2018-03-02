@@ -9,6 +9,7 @@ module Game.Grid
         , findCoordinateReverse
         , fromList
         , get
+        , isNothing
         , initialize
         , map
         , mergeAt
@@ -174,11 +175,16 @@ findCoordinateReverse pred { columns, data } =
         |> Maybe.map (coordinatesFromCols columns)
 
 
-has : Coordinate -> Grid (Maybe a) -> Bool
-has coord grid =
-    case get coord grid of
-        Just _ ->
-            True
+isNothing : Coordinate -> Grid (Maybe a) -> Bool
+isNothing pos grid =
+    case get pos grid of
+        Just v ->
+            case v of
+                Just _ ->
+                    False
+
+                Nothing ->
+                    True
 
         Nothing ->
             False
