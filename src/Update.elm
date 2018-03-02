@@ -16,29 +16,29 @@ update msg model =
 updateTime : Float -> Model -> Model
 updateTime dt model =
     let
-        newDt =
+        nextDt =
             model.dt + dt
 
-        newTick =
-            newDt |> Time.inSeconds |> truncate
+        nextTick =
+            nextDt |> Time.inSeconds |> ((*) 1.5) |> truncate
 
         mapper =
-            if (newTick > model.tick) then
+            if (nextTick > model.tick) then
                 gameTick
             else
                 identity
     in
         mapper
             { model
-                | dt = newDt
-                , tick = newTick
+                | dt = nextDt
+                , tick = nextTick
             }
 
 
-(>=>) : Maybe a -> (a -> b) -> Maybe b
-(>=>) =
+(?>) : Maybe a -> (a -> b) -> Maybe b
+(?>) =
     flip Maybe.map
-infixr 9 >=>
+infixr 9 ?>
 
 
 gameTick : Model -> Model
@@ -46,18 +46,25 @@ gameTick model =
     let
         { tick, activeTetromino, board } =
             model
-
-        newActiveTetromino =
-            case activeTetromino of
-                Just tetro ->
-                    if (Tuple.second tetro.position) > 21 then
-                        activeTetromino >=> Tetromino.setPos ( 0, -1 )
-                    else
-                        activeTetromino >=> Tetromino.moveDown
-
-                Nothing ->
-                    activeTetromino
     in
-        { model
-            | activeTetromino = newActiveTetromino
-        }
+        case activeTetromino of
+            Nothing ->
+                { model
+                    | activeTetromino = Just (T.create L ( 4, -1 ))
+                }
+
+            Just tetro ->
+                if (tetro |> T.getBottomBound) == 21 then
+                    { model
+                        | activeTetromino = Nothing
+                        , board = Grid.mergeAt tetro.blocks tetro.position board
+                    }
+                else
+                    { model
+                        | activeTetromino = tetro |> T.moveDown |> Just
+                    }
+
+
+
+-- detectCollision : Tetromino -> Grid -> Bool
+-- detectCollision tetro board =
