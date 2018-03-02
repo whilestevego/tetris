@@ -6,6 +6,15 @@ import Time exposing (Time)
 import Game.Grid as Grid exposing (Grid)
 
 
+-- Todo: Move to module --
+
+
+(?>) : Maybe a -> (a -> b) -> Maybe b
+(?>) =
+    flip Maybe.map
+infixr 9 ?>
+
+
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
@@ -20,7 +29,7 @@ updateTime dt model =
             model.dt + dt
 
         nextTick =
-            nextDt |> Time.inSeconds |> ((*) 1.5) |> truncate
+            nextDt |> Time.inSeconds |> ((*) 2) |> truncate
 
         mapper =
             if (nextTick > model.tick) then
@@ -35,23 +44,34 @@ updateTime dt model =
             }
 
 
-(?>) : Maybe a -> (a -> b) -> Maybe b
-(?>) =
-    flip Maybe.map
-infixr 9 ?>
-
-
 gameTick : Model -> Model
 gameTick model =
+    model
+        |> applyGravity
+        |> spawnTetromino
+
+
+spawnTetromino : Model -> Model
+spawnTetromino model =
+    case model.activeTetromino of
+        Nothing ->
+            { model
+                | activeTetromino = Just (T.create L ( 4, -1 ))
+            }
+
+        Just _ ->
+            model
+
+
+applyGravity : Model -> Model
+applyGravity model =
     let
         { tick, activeTetromino, board } =
             model
     in
         case activeTetromino of
             Nothing ->
-                { model
-                    | activeTetromino = Just (T.create L ( 4, -1 ))
-                }
+                model
 
             Just tetro ->
                 if detectCollision (tetro |> T.moveDown) board then
