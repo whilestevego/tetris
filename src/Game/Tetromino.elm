@@ -2,12 +2,18 @@ module Game.Tetromino
     exposing
         ( Tetromino
         , Block(..)
+        , coordinateFoldl
         , create
         , rotateRight
         , setPos
         , moveDown
         , getX
         , getY
+        , getTopBound
+        , getRightBound
+        , getBottomBound
+        , getLeftBound
+        , toPositionList
         , color
         )
 
@@ -162,10 +168,30 @@ getBounds { position, bounds } =
         ( pX, pY ) =
             position
 
-        ( ( uLX, uLY ), ( lRX, lRY ) ) =
+        ( ( tLX, tLY ), ( bRX, bRY ) ) =
             bounds
     in
-        ( ( pX + uLX, pY + uLY ), ( pX + lRX, pY + lRY ) )
+        ( ( pX + tLX, pY + tLY ), ( pX + bRX, pY + bRY ) )
+
+
+getTopBound : Tetromino -> Int
+getTopBound tetromino =
+    tetromino |> getBounds |> Tuple.first |> Tuple.second
+
+
+getRightBound : Tetromino -> Int
+getRightBound tetromino =
+    tetromino |> getBounds |> Tuple.second |> Tuple.first
+
+
+getBottomBound : Tetromino -> Int
+getBottomBound tetromino =
+    tetromino |> getBounds |> Tuple.second |> Tuple.second
+
+
+getLeftBound : Tetromino -> Int
+getLeftBound tetromino =
+    tetromino |> getBounds |> Tuple.first |> Tuple.first
 
 
 rotateRight : Tetromino -> Tetromino
@@ -209,6 +235,33 @@ getX tetromino =
 getY : Tetromino -> Int
 getY tetromino =
     Tuple.second tetromino.position
+
+
+coordinateFoldl : (Coordinate -> Maybe Block -> b -> b) -> b -> Tetromino -> b
+coordinateFoldl fn init { blocks, position } =
+    let
+        ( pX, pY ) =
+            position
+    in
+        Grid.coordinateFoldl
+            (\( x, y ) block acc -> fn ( x + pX, y + pY ) block acc)
+            init
+            blocks
+
+
+toPositionList : Tetromino -> List Coordinate
+toPositionList tetromino =
+    coordinateFoldl
+        (\pos block acc ->
+            case block of
+                Just _ ->
+                    pos :: acc
+
+                Nothing ->
+                    acc
+        )
+        []
+        tetromino
 
 
 

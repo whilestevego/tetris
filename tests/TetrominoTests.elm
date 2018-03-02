@@ -6,6 +6,11 @@ import Game.Tetromino as Tetromino exposing (..)
 import Game.Grid as Grid
 
 
+(?) : Maybe a -> a -> a
+(?) =
+    flip Maybe.withDefault
+
+
 all : Test
 all =
     describe "Tetromino"
@@ -76,5 +81,89 @@ all =
                         Expect.equal
                             (Tuple.second tetro.bounds)
                             ( 1, 2 )
+            ]
+        , describe "getBottomBound"
+            [ test "with (0, 0) position" <|
+                \_ ->
+                    let
+                        tetro =
+                            create J ( 0, 0 )
+                    in
+                        Expect.equal (getBottomBound tetro) 2
+            , test "with (3, 5) position" <|
+                \_ ->
+                    let
+                        tetro =
+                            create J ( 3, 5 )
+                    in
+                        Expect.equal (getBottomBound tetro) 7
+            ]
+        , describe "getRightBound"
+            [ test "with (0, 0) position" <|
+                \_ ->
+                    let
+                        tetro =
+                            create J ( 0, 0 )
+                    in
+                        Expect.equal (getRightBound tetro) 2
+            , test "with (3, 5) position" <|
+                \_ ->
+                    let
+                        tetro =
+                            create J ( 3, 5 )
+                    in
+                        Expect.equal (getRightBound tetro) 5
+            ]
+        , describe "coordinateFoldl"
+            [ test "over positions at (0, 0)" <|
+                \_ ->
+                    let
+                        tetro =
+                            create J ( 0, 0 )
+                    in
+                        Expect.equal
+                            (coordinateFoldl
+                                (\( x, y ) _ acc ->
+                                    toString x ++ toString y ++ "." ++ acc
+                                )
+                                ""
+                                tetro
+                            )
+                            "22.12.02.21.11.01.20.10.00."
+            , test "over positions at (1, 2)" <|
+                \_ ->
+                    let
+                        tetro =
+                            create J ( 1, 2 )
+                    in
+                        Expect.equal
+                            (coordinateFoldl
+                                (\( x, y ) _ acc ->
+                                    toString x ++ toString y ++ "." ++ acc
+                                )
+                                ""
+                                tetro
+                            )
+                            "34.24.14.33.23.13.32.22.12."
+            ]
+        , describe "toPositionList"
+            [ test "over positions at (0, 0)" <|
+                \_ ->
+                    let
+                        tetro =
+                            create J ( 0, 0 )
+                    in
+                        Expect.equal
+                            (tetro |> toPositionList)
+                            [ ( 1, 2 ), ( 0, 2 ), ( 2, 1 ), ( 1, 1 ) ]
+            , test "over positions at (1, 2)" <|
+                \_ ->
+                    let
+                        tetro =
+                            create J ( 1, 2 )
+                    in
+                        Expect.equal
+                            (tetro |> toPositionList)
+                            [ ( 2, 4 ), ( 1, 4 ), ( 3, 3 ), ( 2, 3 ) ]
             ]
         ]

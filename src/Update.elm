@@ -1,8 +1,9 @@
 module Update exposing (..)
 
-import Game.Tetromino as Tetromino
+import Game.Tetromino as T exposing (Tetromino, Block(..))
 import Model exposing (..)
 import Time exposing (Time)
+import Game.Grid as Grid
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
