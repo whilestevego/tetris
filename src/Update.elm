@@ -164,7 +164,7 @@ spawnTetromino model =
             { model
                 | activeTetromino =
                     Just
-                        (T.create (T.typeFromInt model.randomNum) ( 4, -1 ))
+                        (T.create (T.typeFromInt model.randomNum) ( 4, 0 ))
             }
 
         Just _ ->
@@ -191,6 +191,10 @@ applyGravity model =
                     { model
                         | activeTetromino = tetro |> T.moveDown |> Just
                     }
+
+
+
+-- UTILITIES --
 
 
 detectCollision : Tetromino -> Grid (Maybe Block) -> Bool
