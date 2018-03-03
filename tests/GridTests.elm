@@ -211,15 +211,25 @@ all =
                     Expect.equal
                         (get ( 0, 4 ) (initialize 3 5 identity))
                         (Just ( 0, 4 ))
-            , test "outside col" <|
+            , test "outside col left-side" <|
                 \_ ->
                     Expect.equal
-                        (get ( 2, 0 ) (initialize 2 2 identity))
+                        (get ( -1, 2 ) (initialize 3 3 identity))
                         Nothing
-            , test "outside row" <|
+            , test "outside col right-side" <|
                 \_ ->
                     Expect.equal
-                        (get ( 0, 2 ) (initialize 2 2 identity))
+                        (get ( 3, 2 ) (initialize 3 3 identity))
+                        Nothing
+            , test "outside row bottom-side" <|
+                \_ ->
+                    Expect.equal
+                        (get ( 2, 3 ) (initialize 3 3 identity))
+                        Nothing
+            , test "outside row top-side" <|
+                \_ ->
+                    Expect.equal
+                        (get ( 2, -1 ) (initialize 3 3 identity))
                         Nothing
             ]
         , describe "set"

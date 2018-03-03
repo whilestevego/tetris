@@ -196,7 +196,7 @@ get ( x, y ) { data, columns } =
         rows =
             (Array.length data) // columns
     in
-        if (x >= columns || y >= rows) then
+        if (x < 0 || x >= columns || y < 0 || y >= rows) then
             Nothing
         else
             Array.get (x + y * columns) data
