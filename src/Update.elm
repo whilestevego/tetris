@@ -54,12 +54,6 @@ updateTime dt model =
                 | dt = nextDt
                 , tick = nextTick
             }
-
-        mapper =
-            if (nextTick > model.tick) then
-                gameTick
-            else
-                identity
     in
         if (nextTick > model.tick) then
             ( gameTick nextModel
