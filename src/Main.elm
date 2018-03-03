@@ -6,6 +6,7 @@ import Update exposing (..)
 import View exposing (..)
 import AnimationFrame
 import Time exposing (Time)
+import Keyboard exposing (..)
 
 
 ---- SUBSCRIPTION ----
@@ -14,7 +15,10 @@ import Time exposing (Time)
 subscriptions : Model -> Sub Msg
 subscriptions model =
     Sub.batch
-        [ AnimationFrame.diffs (AnimationDiffs << Time.inMilliseconds << identity)
+        [ AnimationFrame.diffs
+            (AnimationDiffs << Time.inMilliseconds << identity)
+        , Keyboard.downs KeyDown
+        , Keyboard.ups KeyUp
         ]
 
 

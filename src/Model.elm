@@ -2,11 +2,15 @@ module Model exposing (..)
 
 import Game.Grid as Grid exposing (Grid, Coordinate)
 import Game.Tetromino as Tetromino exposing (..)
+import Keyboard exposing (KeyCode)
+import Set exposing (Set)
 
 
 type Msg
     = AnimationDiffs Float
     | GetRandom Int
+    | KeyDown KeyCode
+    | KeyUp KeyCode
 
 
 type alias Model =
@@ -15,6 +19,8 @@ type alias Model =
     , dt : Float
     , tick : Int
     , randomNum : Int
+    , inputMods : Set KeyCode
+    , inputKey : Maybe KeyCode
     }
 
 
@@ -30,6 +36,8 @@ init =
       , dt = 0
       , tick = 0
       , randomNum = 0
+      , inputMods = Set.empty
+      , inputKey = Nothing
       }
     , Cmd.none
     )
