@@ -5,8 +5,11 @@ module Game.Tetromino
         , coordinateFoldl
         , create
         , rotateRight
+        , rotateLeft
         , setPos
         , moveDown
+        , moveLeft
+        , moveRight
         , mergeWith
         , getX
         , getY
@@ -196,6 +199,21 @@ getLeftBound tetromino =
     tetromino |> getBounds |> Tuple.first |> Tuple.first
 
 
+rotateLeft : Tetromino -> Tetromino
+rotateLeft tetromino =
+    let
+        blocks =
+            Grid.rotate270 tetromino.blocks
+
+        bounds =
+            calculateBounds blocks
+    in
+        { tetromino
+            | blocks = blocks
+            , bounds = bounds
+        }
+
+
 rotateRight : Tetromino -> Tetromino
 rotateRight tetromino =
     let
@@ -227,6 +245,24 @@ moveDown tetromino =
             tetromino.position
     in
         setPos ( pX, pY + 1 ) tetromino
+
+
+moveLeft : Tetromino -> Tetromino
+moveLeft tetromino =
+    let
+        ( pX, pY ) =
+            tetromino.position
+    in
+        setPos ( pX - 1, pY ) tetromino
+
+
+moveRight : Tetromino -> Tetromino
+moveRight tetromino =
+    let
+        ( pX, pY ) =
+            tetromino.position
+    in
+        setPos ( pX + 1, pY ) tetromino
 
 
 getX : Tetromino -> Int
