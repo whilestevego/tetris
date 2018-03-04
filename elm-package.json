@@ -1,6 +1,6 @@
 {
     "version": "0.0.1",
-    "homepage": "https://whilestevego.github.io/",
+    "homepage": "https://whilestevego.github.io/Tetris",
     "summary": "Implementation of Tetris in Elm",
     "repository": "https://github.com/user/project.git",
     "license": "BSD3",
