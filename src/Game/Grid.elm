@@ -2,6 +2,8 @@ module Game.Grid
     exposing
         ( Grid
         , Coordinate
+        , Column
+        , Row
         , columnLength
         , coordinateFoldl
         , coordinateMap
