@@ -25,8 +25,8 @@ all =
                             tetro.blocks
                             (Grid.fromList
                                 [ [ Nothing, Nothing, Nothing ]
-                                , [ Nothing, Just S, Just S ]
-                                , [ Just S, Just S, Nothing ]
+                                , [ Just J, Nothing, Nothing ]
+                                , [ Just J, Just J, Just J ]
                                 ]
                             )
             , test "to have correct top-left bound" <|
@@ -58,9 +58,9 @@ all =
                         Expect.equal
                             tetro.blocks
                             (Grid.fromList
-                                [ [ Just S, Nothing, Nothing ]
-                                , [ Just S, Just S, Nothing ]
-                                , [ Nothing, Just S, Nothing ]
+                                [ [ Just J, Just J, Nothing ]
+                                , [ Just J, Nothing, Nothing ]
+                                , [ Just J, Nothing, Nothing ]
                                 ]
                             )
             , test "to update top-left bound" <|
@@ -155,7 +155,7 @@ all =
                     in
                         Expect.equal
                             (tetro |> toPositionList)
-                            [ ( 1, 2 ), ( 0, 2 ), ( 2, 1 ), ( 1, 1 ) ]
+                            [ ( 2, 2 ), ( 1, 2 ), ( 0, 2 ), ( 0, 1 ) ]
             , test "over positions at (1, 2)" <|
                 \_ ->
                     let
@@ -164,6 +164,6 @@ all =
                     in
                         Expect.equal
                             (tetro |> toPositionList)
-                            [ ( 2, 4 ), ( 1, 4 ), ( 3, 3 ), ( 2, 3 ) ]
+                            [ ( 3, 4 ), ( 2, 4 ), ( 1, 4 ), ( 1, 3 ) ]
             ]
         ]
