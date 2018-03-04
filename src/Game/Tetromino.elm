@@ -17,12 +17,16 @@ module Game.Tetromino
         , getRightBound
         , getBottomBound
         , getLeftBound
+        , getOccupiedColumns
+        , getOccupiedRows
         , toPositionList
+        , toPositionSet
         , typeFromInt
         , color
         )
 
-import Game.Grid as Grid exposing (Grid, Coordinate)
+import Game.Grid as Grid exposing (Grid, Coordinate, Column, Row)
+import Set exposing (Set)
 
 
 type Block
@@ -265,14 +269,28 @@ moveRight tetromino =
         setPos ( pX + 1, pY ) tetromino
 
 
-getX : Tetromino -> Int
+getX : Tetromino -> Column
 getX tetromino =
     Tuple.first tetromino.position
 
 
-getY : Tetromino -> Int
+getY : Tetromino -> Row
 getY tetromino =
     Tuple.second tetromino.position
+
+
+getOccupiedRows : Tetromino -> Set Row
+getOccupiedRows tetromino =
+    tetromino
+        |> toPositionSet
+        |> Set.map (Tuple.second)
+
+
+getOccupiedColumns : Tetromino -> Set Column
+getOccupiedColumns tetromino =
+    tetromino
+        |> toPositionSet
+        |> Set.map (Tuple.first)
 
 
 coordinateFoldl : (Coordinate -> Maybe Block -> b -> b) -> b -> Tetromino -> b
@@ -285,6 +303,21 @@ coordinateFoldl fn init { blocks, position } =
             (\( x, y ) block acc -> fn ( x + pX, y + pY ) block acc)
             init
             blocks
+
+
+toPositionSet : Tetromino -> Set Coordinate
+toPositionSet tetromino =
+    tetromino
+        |> coordinateFoldl
+            (\pos block acc ->
+                case block of
+                    Just _ ->
+                        acc |> Set.insert pos
+
+                    Nothing ->
+                        acc
+            )
+            Set.empty
 
 
 toPositionList : Tetromino -> List Coordinate

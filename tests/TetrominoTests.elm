@@ -4,6 +4,7 @@ import Test exposing (..)
 import Expect
 import Game.Tetromino as Tetromino exposing (..)
 import Game.Grid as Grid
+import Set exposing (Set)
 
 
 (?) : Maybe a -> a -> a
@@ -165,5 +166,73 @@ all =
                         Expect.equal
                             (tetro |> toPositionList)
                             [ ( 3, 4 ), ( 2, 4 ), ( 1, 4 ), ( 1, 3 ) ]
+            ]
+        , describe "toPositionSet"
+            [ test "over positions at (0, 0)" <|
+                \_ ->
+                    let
+                        tetro =
+                            create J ( 0, 0 )
+                    in
+                        Expect.equal
+                            (tetro |> toPositionSet)
+                            (Set.fromList
+                                [ ( 2, 2 ), ( 1, 2 ), ( 0, 2 ), ( 0, 1 ) ]
+                            )
+            , test "over positions at (1, 2)" <|
+                \_ ->
+                    let
+                        tetro =
+                            create J ( 1, 2 )
+                    in
+                        Expect.equal
+                            (tetro |> toPositionSet)
+                            (Set.fromList
+                                [ ( 3, 4 ), ( 2, 4 ), ( 1, 4 ), ( 1, 3 ) ]
+                            )
+            ]
+        , describe "getOccupiedRows"
+            [ test "with J-Tetromino at (0, 0)" <|
+                \_ ->
+                    Expect.equal
+                        (create J ( 0, 0 ) |> getOccupiedRows)
+                        (Set.fromList [ 1, 2 ])
+            , test "with J-Tetromino at (4, 6)" <|
+                \_ ->
+                    Expect.equal
+                        (create J ( 4, 6 ) |> getOccupiedRows)
+                        (Set.fromList [ 7, 8 ])
+            , test "with I-Tetromino at (3, 3)" <|
+                \_ ->
+                    Expect.equal
+                        (create I ( 3, 3 ) |> getOccupiedRows)
+                        (Set.fromList [ 4 ])
+            , test "with I-Tetromino at (0, 0) rotated right" <|
+                \_ ->
+                    Expect.equal
+                        (create I ( 0, 0 ) |> rotateRight |> getOccupiedRows)
+                        (Set.fromList [ 0, 1, 2, 3 ])
+            ]
+        , describe "getOccupiedColumns"
+            [ test "with J-Tetromino at (0, 0)" <|
+                \_ ->
+                    Expect.equal
+                        (create J ( 0, 0 ) |> getOccupiedColumns)
+                        (Set.fromList [ 0, 1, 2 ])
+            , test "with J-Tetromino at (4, 6)" <|
+                \_ ->
+                    Expect.equal
+                        (create J ( 4, 6 ) |> getOccupiedColumns)
+                        (Set.fromList [ 4, 5, 6 ])
+            , test "with I-Tetromino at (3, 3)" <|
+                \_ ->
+                    Expect.equal
+                        (create I ( 3, 3 ) |> getOccupiedColumns)
+                        (Set.fromList [ 3, 4, 5, 6 ])
+            , test "with I-Tetromino at (0, 0) rotated right" <|
+                \_ ->
+                    Expect.equal
+                        (create I ( 0, 0 ) |> rotateRight |> getOccupiedColumns)
+                        (Set.fromList [ 2 ])
             ]
         ]
