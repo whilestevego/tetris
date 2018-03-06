@@ -11,8 +11,8 @@ module Game.Grid
         , findCoordinateReverse
         , fromList
         , get
-        , isNothing
         , initialize
+        , isNothing
         , map
         , mergeAt
         , rotate180
@@ -20,6 +20,7 @@ module Game.Grid
         , rotate90
         , rowLength
         , set
+        , slice
         , toFlatList
         , toList
         )
@@ -65,9 +66,8 @@ type alias Coordinate =
     ( Column, Row )
 
 
-coordinatesFromCols : Int -> Int -> Coordinate
-coordinatesFromCols columns index =
-    ( index % columns, index // columns )
+
+-- PUBLIC --
 
 
 columnLength : Grid a -> Int
@@ -141,6 +141,7 @@ rotate270 grid =
 
 initialize : Int -> Int -> (Coordinate -> a) -> Grid a
 initialize columns rows f =
+    -- TODO: Add tests for negative values of columns and rows
     let
         coords =
             coordinatesFromCols columns
@@ -233,6 +234,23 @@ set ( x, y ) value grid =
             Grid columns (Array.set (x + y * columns) value data)
 
 
+slice : Coordinate -> Coordinate -> Grid a -> Grid a
+slice ( aX, aY ) ( bX, bY ) grid =
+    let
+        -- Start Coordinates
+        ( sX, sY ) =
+            ( min aX bX, min aY bY ) |> clampInside grid
+
+        -- End Coordinates
+        ( eX, eY ) =
+            ( max aX bX, max aY bY ) |> clampInside grid
+    in
+        initialize
+            (eX - sX)
+            (eY - sY)
+            (\( x, y ) -> getUnsafe ( sX + x, sY + y ) grid)
+
+
 coordinateFoldl : (Coordinate -> a -> b -> b) -> b -> Grid a -> b
 coordinateFoldl fn init grid =
     let
@@ -275,3 +293,19 @@ mergeAt gridA ( baseX, baseY ) gridB =
                 set ( baseX + x, baseY + y ) value grid
             )
             gridB
+
+
+
+-- PRIVATE --
+
+
+clampInside : Grid a -> Coordinate -> Coordinate
+clampInside grid ( x, y ) =
+    ( clamp 0 (grid |> columnLength) x
+    , clamp 0 (grid |> rowLength) y
+    )
+
+
+coordinatesFromCols : Int -> Int -> Coordinate
+coordinatesFromCols columns index =
+    ( index % columns, index // columns )

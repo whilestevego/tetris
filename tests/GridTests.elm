@@ -288,6 +288,139 @@ all =
                             (set ( 0, 2 ) "Hello" grid)
                             grid
             ]
+        , describe "slice"
+            [ test "( 0, 0 ) to ( 0, 0 )" <|
+                \_ ->
+                    let
+                        grid =
+                            fromList
+                                [ [ "Bye", "Hi", "Bye" ]
+                                , [ "Hi", "Yo", "Hi" ]
+                                , [ "Bye", "Hi", "Bye" ]
+                                ]
+                    in
+                        Expect.equal
+                            (grid |> slice ( 0, 0 ) ( 0, 0 ))
+                            (fromList [])
+            , test "slicing a square from ( 0, 0 ) to ( 2, 2)" <|
+                \_ ->
+                    let
+                        grid =
+                            fromList
+                                [ [ "Bye", "Hi", "Bye" ]
+                                , [ "Hi", "Yo", "Hi" ]
+                                , [ "Bye", "Hi", "Bye" ]
+                                ]
+                    in
+                        Expect.equal
+                            (grid |> slice ( 0, 0 ) ( 2, 2 ))
+                            (fromList
+                                [ [ "Bye", "Hi" ]
+                                , [ "Hi", "Yo" ]
+                                ]
+                            )
+            , test "slicing column 1 using ( 1, 0 ) to ( 2, 3 )" <|
+                \_ ->
+                    let
+                        grid =
+                            fromList
+                                [ [ "Bye", "Hi", "Bye" ]
+                                , [ "Hi", "Yo", "Hi" ]
+                                , [ "Bye", "Hi", "Bye" ]
+                                ]
+                    in
+                        Expect.equal
+                            (grid |> slice ( 1, 0 ) ( 2, 3 ))
+                            (fromList
+                                [ [ "Hi" ]
+                                , [ "Yo" ]
+                                , [ "Hi" ]
+                                ]
+                            )
+            , test "slicing row 1 using ( 0, 1 ) to ( 3, 2 )" <|
+                \_ ->
+                    let
+                        grid =
+                            fromList
+                                [ [ "Bye", "Hi", "Bye" ]
+                                , [ "Hi", "Yo", "Hi" ]
+                                , [ "Bye", "Hi", "Bye" ]
+                                ]
+                    in
+                        Expect.equal
+                            (grid |> slice ( 0, 1 ) ( 3, 2 ))
+                            (fromList
+                                [ [ "Hi", "Yo", "Hi" ]
+                                ]
+                            )
+
+            -- TODO: Make this more efficient (don't create new grid)
+            , test "slicing larger than bounds returns grid" <|
+                \_ ->
+                    let
+                        grid =
+                            fromList
+                                [ [ "Bye", "Hi", "Bye" ]
+                                , [ "Hi", "Yo", "Hi" ]
+                                , [ "Bye", "Hi", "Bye" ]
+                                ]
+                    in
+                        Expect.equal
+                            (grid |> slice ( -1, -1 ) ( 4, 4 ))
+                            (fromList
+                                [ [ "Bye", "Hi", "Bye" ]
+                                , [ "Hi", "Yo", "Hi" ]
+                                , [ "Bye", "Hi", "Bye" ]
+                                ]
+                            )
+            , test "slicing outside bounds returns empty grid" <|
+                \_ ->
+                    let
+                        grid =
+                            fromList
+                                [ [ "Bye", "Hi", "Bye" ]
+                                , [ "Hi", "Yo", "Hi" ]
+                                , [ "Bye", "Hi", "Bye" ]
+                                ]
+                    in
+                        Expect.equal
+                            (grid |> slice ( -5, -5 ) ( -1, -1 ))
+                            (fromList [])
+            , test "slicing row 1 using ( -1, 1 ) to ( 4, 2 )" <|
+                \_ ->
+                    let
+                        grid =
+                            fromList
+                                [ [ "Bye", "Hi", "Bye" ]
+                                , [ "Hi", "Yo", "Hi" ]
+                                , [ "Bye", "Hi", "Bye" ]
+                                ]
+                    in
+                        Expect.equal
+                            (grid |> slice ( -1, 1 ) ( 5, 2 ))
+                            (fromList
+                                [ [ "Hi", "Yo", "Hi" ]
+                                ]
+                            )
+            , test "slicing column 1 using ( 1, -2 ) to ( 2, 7 )" <|
+                \_ ->
+                    let
+                        grid =
+                            fromList
+                                [ [ "Bye", "Hi", "Bye" ]
+                                , [ "Hi", "Yo", "Hi" ]
+                                , [ "Bye", "Hi", "Bye" ]
+                                ]
+                    in
+                        Expect.equal
+                            (grid |> slice ( 1, -2 ) ( 2, 8 ))
+                            (fromList
+                                [ [ "Hi" ]
+                                , [ "Yo" ]
+                                , [ "Hi" ]
+                                ]
+                            )
+            ]
         , test "rotate90" <|
             \_ ->
                 let
