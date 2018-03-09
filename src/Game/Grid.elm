@@ -328,13 +328,11 @@ map f { columns, data } =
 
 
 mergeAt : Grid a -> Coordinate -> Grid a -> Grid a
-mergeAt gridA ( baseX, baseY ) gridB =
+mergeAt gridA ( oX, oY ) gridB =
     gridA
-        |> coordinateMap (\coords value -> ( coords, value ))
-        |> toFlatList
-        |> List.foldl
-            (\( ( x, y ), value ) grid ->
-                set ( baseX + x, baseY + y ) value grid
+        |> coordinateFoldl
+            (\( x, y ) value grid ->
+                set ( oX + x, oY + y ) value grid
             )
             gridB
 
