@@ -7,10 +7,12 @@ module Game.Grid
         , columnLength
         , coordinateFoldl
         , coordinateMap
+        , coordinateAll
         , findCoordinate
         , findCoordinateReverse
         , fromList
         , get
+        , isSomething
         , initialize
         , isNothing
         , map
@@ -21,6 +23,7 @@ module Game.Grid
         , rowLength
         , set
         , slice
+        , getRow
         , toFlatList
         , toList
         )
@@ -193,6 +196,21 @@ isNothing pos grid =
             False
 
 
+isSomething : Coordinate -> Grid (Maybe a) -> Bool
+isSomething pos grid =
+    case get pos grid of
+        Just v ->
+            case v of
+                Just _ ->
+                    True
+
+                Nothing ->
+                    False
+
+        Nothing ->
+            False
+
+
 get : Coordinate -> Grid a -> Maybe a
 get ( x, y ) { data, columns } =
     let
@@ -244,11 +262,31 @@ slice ( aX, aY ) ( bX, bY ) grid =
         -- End Coordinates
         ( eX, eY ) =
             ( max aX bX, max aY bY ) |> clampInside grid
+
+        columns =
+            (eX - sX)
+
+        rows =
+            (eY - sY)
     in
         initialize
-            (eX - sX)
-            (eY - sY)
+            (if rows < 1 then
+                0
+             else
+                columns
+            )
+            (if columns < 1 then
+                0
+             else
+                rows
+            )
             (\( x, y ) -> getUnsafe ( sX + x, sY + y ) grid)
+
+
+getRow : Row -> Grid a -> Grid a
+getRow row grid =
+    grid
+        |> slice ( 0, row ) ( grid |> columnLength, row + 1 )
 
 
 coordinateFoldl : (Coordinate -> a -> b -> b) -> b -> Grid a -> b
@@ -274,6 +312,14 @@ coordinateMap f { columns, data } =
     data
         |> Array.indexedMap (\i v -> f (coordinatesFromCols columns i) v)
         |> Grid columns
+
+
+coordinateAll : (Coordinate -> a -> Bool) -> Grid a -> Bool
+coordinateAll f grid =
+    grid
+        |> coordinateFoldl
+            (\coord block acc -> f coord block && acc)
+            True
 
 
 map : (a -> b) -> Grid a -> Grid b
