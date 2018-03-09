@@ -420,6 +420,60 @@ all =
                                 , [ "Hi" ]
                                 ]
                             )
+            , test "slicing row outside using ( 0, -2 ) to ( 3, -1 )" <|
+                \_ ->
+                    let
+                        grid =
+                            fromList
+                                [ [ "Bye", "Hi", "Bye" ]
+                                , [ "Hi", "Yo", "Hi" ]
+                                , [ "Bye", "Hi", "Bye" ]
+                                ]
+                    in
+                        (grid |> slice ( 0, -2 ) ( 3, -1 ))
+                            |> Expect.equal
+                                (fromList [])
+            ]
+        , describe "getRow"
+            [ test "first row" <|
+                \_ ->
+                    let
+                        grid =
+                            fromList
+                                [ [ "Bye", "Hi", "Bye" ]
+                                , [ "Hi", "Yo", "Hi" ]
+                                , [ "Bye", "Hi", "Bye" ]
+                                ]
+                    in
+                        (grid |> getRow 0)
+                            |> Expect.equal
+                                (fromList [ [ "Bye", "Hi", "Bye" ] ])
+            , test "second row" <|
+                \_ ->
+                    let
+                        grid =
+                            fromList
+                                [ [ "Bye", "Hi", "Bye" ]
+                                , [ "Hi", "Yo", "Hi" ]
+                                , [ "Bye", "Hi", "Bye" ]
+                                ]
+                    in
+                        (grid |> getRow 1)
+                            |> Expect.equal
+                                (fromList [ [ "Hi", "Yo", "Hi" ] ])
+            , test "outside" <|
+                \_ ->
+                    let
+                        grid =
+                            fromList
+                                [ [ "Bye", "Hi", "Bye" ]
+                                , [ "Hi", "Yo", "Hi" ]
+                                , [ "Bye", "Hi", "Bye" ]
+                                ]
+                    in
+                        (grid |> getRow -2)
+                            |> Expect.equal
+                                (fromList [])
             ]
         , test "rotate90" <|
             \_ ->
