@@ -32,11 +32,9 @@ import List.Extra exposing (groupsOf)
 import Array exposing (Array)
 
 
--- TODO: Move to an Array module
-
-
 findIndex : (a -> Bool) -> Array a -> Maybe Int
 findIndex pred arr =
+    -- TODO: Move to an Array module
     arr
         |> Array.toList
         |> List.Extra.findIndex pred
