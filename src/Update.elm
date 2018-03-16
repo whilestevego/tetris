@@ -55,7 +55,7 @@ updateTime dt model =
                 , tick = nextTick
             }
     in
-        if (nextTick > model.tick) then
+        if nextTick > model.tick then
             ( gameTick nextModel
             , Random.generate GetRandom (Random.int 1 7)
             )

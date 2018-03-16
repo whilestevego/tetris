@@ -77,23 +77,23 @@ generateBlocks blockType =
 
         T ->
             Grid.fromList
-                [ [ Nothing, Nothing, Nothing ]
-                , [ Nothing, Just T, Nothing ]
+                [ [ Nothing, Just T, Nothing ]
                 , [ Just T, Just T, Just T ]
+                , [ Nothing, Nothing, Nothing ]
                 ]
 
         J ->
             Grid.fromList
-                [ [ Nothing, Nothing, Nothing ]
-                , [ Just J, Nothing, Nothing ]
+                [ [ Just J, Nothing, Nothing ]
                 , [ Just J, Just J, Just J ]
+                , [ Nothing, Nothing, Nothing ]
                 ]
 
         L ->
             Grid.fromList
-                [ [ Nothing, Nothing, Nothing ]
-                , [ Nothing, Nothing, Just L ]
+                [ [ Nothing, Nothing, Just L ]
                 , [ Just L, Just L, Just L ]
+                , [ Nothing, Nothing, Nothing ]
                 ]
 
         S ->

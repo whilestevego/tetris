@@ -25,9 +25,9 @@ all =
                         Expect.equal
                             tetro.blocks
                             (Grid.fromList
-                                [ [ Nothing, Nothing, Nothing ]
-                                , [ Just J, Nothing, Nothing ]
+                                [ [ Just J, Nothing, Nothing ]
                                 , [ Just J, Just J, Just J ]
+                                , [ Nothing, Nothing, Nothing ]
                                 ]
                             )
             , test "to have correct top-left bound" <|
@@ -38,7 +38,7 @@ all =
                     in
                         Expect.equal
                             (Tuple.first tetro.bounds)
-                            ( 0, 1 )
+                            ( 0, 0 )
             , test "to have correct bottom-right bound" <|
                 \_ ->
                     let
@@ -47,7 +47,7 @@ all =
                     in
                         Expect.equal
                             (Tuple.second tetro.bounds)
-                            ( 2, 2 )
+                            ( 2, 1 )
             ]
         , describe "rotateRight"
             [ test "to have correct blocks" <|
@@ -59,9 +59,9 @@ all =
                         Expect.equal
                             tetro.blocks
                             (Grid.fromList
-                                [ [ Just J, Just J, Nothing ]
-                                , [ Just J, Nothing, Nothing ]
-                                , [ Just J, Nothing, Nothing ]
+                                [ [ Nothing, Just J, Just J ]
+                                , [ Nothing, Just J, Nothing ]
+                                , [ Nothing, Just J, Nothing ]
                                 ]
                             )
             , test "to update top-left bound" <|
@@ -72,7 +72,7 @@ all =
                     in
                         Expect.equal
                             (Tuple.first tetro.bounds)
-                            ( 0, 0 )
+                            ( 1, 0 )
             , test "to have correct bottom-right bound" <|
                 \_ ->
                     let
@@ -81,7 +81,7 @@ all =
                     in
                         Expect.equal
                             (Tuple.second tetro.bounds)
-                            ( 1, 2 )
+                            ( 2, 2 )
             ]
         , describe "getBottomBound"
             [ test "with (0, 0) position" <|
@@ -90,14 +90,14 @@ all =
                         tetro =
                             create J ( 0, 0 )
                     in
-                        Expect.equal (getBottomBound tetro) 2
+                        Expect.equal (getBottomBound tetro) 1
             , test "with (3, 5) position" <|
                 \_ ->
                     let
                         tetro =
                             create J ( 3, 5 )
                     in
-                        Expect.equal (getBottomBound tetro) 7
+                        Expect.equal (getBottomBound tetro) 6
             ]
         , describe "getRightBound"
             [ test "with (0, 0) position" <|
@@ -156,7 +156,7 @@ all =
                     in
                         Expect.equal
                             (tetro |> toPositionList)
-                            [ ( 2, 2 ), ( 1, 2 ), ( 0, 2 ), ( 0, 1 ) ]
+                            [ ( 2, 1 ), ( 1, 1 ), ( 0, 1 ), ( 0, 0 ) ]
             , test "over positions at (1, 2)" <|
                 \_ ->
                     let
@@ -165,7 +165,7 @@ all =
                     in
                         Expect.equal
                             (tetro |> toPositionList)
-                            [ ( 3, 4 ), ( 2, 4 ), ( 1, 4 ), ( 1, 3 ) ]
+                            [ ( 3, 3 ), ( 2, 3 ), ( 1, 3 ), ( 1, 2 ) ]
             ]
         , describe "toPositionSet"
             [ test "over positions at (0, 0)" <|
@@ -177,7 +177,7 @@ all =
                         Expect.equal
                             (tetro |> toPositionSet)
                             (Set.fromList
-                                [ ( 2, 2 ), ( 1, 2 ), ( 0, 2 ), ( 0, 1 ) ]
+                                [ ( 0, 0 ), ( 0, 1 ), ( 1, 1 ), ( 2, 1 ) ]
                             )
             , test "over positions at (1, 2)" <|
                 \_ ->
@@ -188,7 +188,7 @@ all =
                         Expect.equal
                             (tetro |> toPositionSet)
                             (Set.fromList
-                                [ ( 3, 4 ), ( 2, 4 ), ( 1, 4 ), ( 1, 3 ) ]
+                                [ ( 1, 2 ), ( 1, 3 ), ( 2, 3 ), ( 3, 3 ) ]
                             )
             ]
         , describe "getOccupiedRows"
@@ -196,12 +196,12 @@ all =
                 \_ ->
                     Expect.equal
                         (create J ( 0, 0 ) |> getOccupiedRows)
-                        (Set.fromList [ 1, 2 ])
+                        (Set.fromList [ 0, 1 ])
             , test "with J-Tetromino at (4, 6)" <|
                 \_ ->
                     Expect.equal
                         (create J ( 4, 6 ) |> getOccupiedRows)
-                        (Set.fromList [ 7, 8 ])
+                        (Set.fromList [ 6, 7 ])
             , test "with I-Tetromino at (3, 3)" <|
                 \_ ->
                     Expect.equal
