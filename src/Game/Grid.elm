@@ -42,6 +42,7 @@ findIndex pred arr =
 
 findIndexReverse : (a -> Bool) -> Array a -> Maybe Int
 findIndexReverse pred arr =
+    -- TODO: Terrible implementation. Should be revisited
     arr
         |> Array.toList
         |> List.reverse

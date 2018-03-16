@@ -161,12 +161,12 @@ applyGravity model =
             model
     in
         case activeTetromino of
-        Nothing ->
+            Nothing ->
                 model
 
             Just tetro ->
                 if detectCollision (tetro |> T.moveDown) board then
-            model
+                    model
                         |> mergeCollidedTetromino
                         |> clearRows tetro
                 else
@@ -185,10 +185,10 @@ mergeCollidedTetromino model =
                 model
 
             Just tetro ->
-                    { model
-                        | activeTetromino = Nothing
-                        , board = tetro |> T.mergeWith board
-                    }
+                { model
+                    | activeTetromino = Nothing
+                    , board = tetro |> T.mergeWith board
+                }
 
 
 clearRows : Tetromino -> Model -> Model
@@ -218,7 +218,7 @@ clearRows tetro model =
         newBoard =
             if markedForClear |> Set.isEmpty then
                 board
-                else
+            else
                 let
                     totalClears =
                         markedForClear
@@ -248,11 +248,11 @@ spawnTetromino : Model -> Model
 spawnTetromino model =
     case model.activeTetromino of
         Nothing ->
-                    { model
+            { model
                 | activeTetromino =
                     Just
                         (T.create (T.typeFromInt model.randomNum) ( 4, -1 ))
-                    }
+            }
 
         Just _ ->
             model
