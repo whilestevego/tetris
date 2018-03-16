@@ -97,9 +97,6 @@ applyCommands model =
     let
         { inputKey, inputMods, activeTetromino } =
             model
-
-        _ =
-            Debug.log "input" ( inputKey, inputMods )
     in
         case inputKey of
             Just key ->
@@ -157,20 +154,6 @@ gameTick model =
         |> spawnTetromino
 
 
-spawnTetromino : Model -> Model
-spawnTetromino model =
-    case model.activeTetromino of
-        Nothing ->
-            { model
-                | activeTetromino =
-                    Just
-                        (T.create (T.typeFromInt model.randomNum) ( 4, 0 ))
-            }
-
-        Just _ ->
-            model
-
-
 applyGravity : Model -> Model
 applyGravity model =
     let
@@ -178,19 +161,101 @@ applyGravity model =
             model
     in
         case activeTetromino of
-            Nothing ->
+        Nothing ->
                 model
 
             Just tetro ->
                 if detectCollision (tetro |> T.moveDown) board then
+            model
+                        |> mergeCollidedTetromino
+                        |> clearRows tetro
+                else
+                    model
+                        |> applyMove T.moveDown
+
+
+mergeCollidedTetromino : Model -> Model
+mergeCollidedTetromino model =
+    let
+        { activeTetromino, board } =
+            model
+    in
+        case activeTetromino of
+            Nothing ->
+                model
+
+            Just tetro ->
                     { model
                         | activeTetromino = Nothing
                         , board = tetro |> T.mergeWith board
                     }
+
+
+clearRows : Tetromino -> Model -> Model
+clearRows tetro model =
+    let
+        { board } =
+            model
+
+        markedForClear =
+            tetro
+                |> T.getOccupiedRows
+                |> Set.filter
+                    (\row ->
+                        board
+                            |> Grid.getRow row
+                            |> Grid.coordinateAll
+                                (\_ block ->
+                                    case block of
+                                        Nothing ->
+                                            False
+
+                                        Just _ ->
+                                            True
+                                )
+                    )
+
+        newBoard =
+            if markedForClear |> Set.isEmpty then
+                board
                 else
+                let
+                    totalClears =
+                        markedForClear
+                            |> Set.size
+                in
+                    board
+                        |> Grid.coordinateMap
+                            (\( x, y ) block ->
+                                let
+                                    yOffset =
+                                        markedForClear
+                                            |> Set.filter
+                                                (\row -> row + totalClears >= y)
+                                            |> Set.size
+                                in
+                                    board
+                                        |> Grid.get ( x, y - yOffset )
+                                        |> Maybe.withDefault Nothing
+                            )
+    in
+        { model
+            | board = newBoard
+        }
+
+
+spawnTetromino : Model -> Model
+spawnTetromino model =
+    case model.activeTetromino of
+        Nothing ->
                     { model
-                        | activeTetromino = tetro |> T.moveDown |> Just
+                | activeTetromino =
+                    Just
+                        (T.create (T.typeFromInt model.randomNum) ( 4, -1 ))
                     }
+
+        Just _ ->
+            model
 
 
 
