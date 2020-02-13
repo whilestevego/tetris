@@ -9,7 +9,7 @@ The key bindings are as follows:
 - Use the left and right arrows to translate left or right.
 - Use `z` and `x` keys to rotate.
 
-![Tetris Gameplay Screenshot](./gameplay-screenshot.png)
+<img height="600px" alt="Tetris Gameplay Screenshot" src="./gameplay-screenshot.png">
 
 ## Todo
 
