@@ -2,7 +2,8 @@
   "scripts": {
     "start": "elm-app start",
     "build": "elm-app build",
-    "deploy": "gh-pages -d build"
+    "deploy": "gh-pages -d build",
+    "test": "elm test"
   },
   "dependencies": {
     "create-elm-app": "1.10.4",
