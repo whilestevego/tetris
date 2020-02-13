@@ -14,6 +14,7 @@ The key bindings are as follows:
 ## Todo
 
 - [x] Clear full lines
+- [ ] Upgrade to Elm 0.19
 - [ ] End game when block settles past ceiling
 - [ ] Display next tetromino
 - [ ] Calculate and display a score
